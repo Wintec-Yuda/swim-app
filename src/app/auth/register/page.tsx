@@ -13,7 +13,7 @@ const RegisterPage = () => {
 
     const form = event.target as HTMLFormElement;
     const data = {
-      name: form.fullname.value,
+      fullname: form.fullname.value,
       email: form.email.value,
       password: form.password.value,
     };

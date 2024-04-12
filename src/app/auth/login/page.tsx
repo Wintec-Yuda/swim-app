@@ -21,7 +21,7 @@ const LoginPage = () => {
 
       if (res?.ok) {
         successAlert("Login successfully");
-        push("/dashboard");
+        push("/user");
       } else {
         errorAlert("Email or password is incorrect");
       }

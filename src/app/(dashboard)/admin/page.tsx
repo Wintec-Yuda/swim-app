@@ -6,14 +6,19 @@ import AthleteTable from "@/components/templates/AthleteTable";
 import Modal from "@/components/templates/Modal";
 import TeamTable from "@/components/templates/TeamTable";
 import { fetcher } from "@/utils/fetcher";
+import { errorAlert } from "@/utils/sweetalert";
 
-const LandingPage: React.FC = () => {
+const AdminPage: React.FC = () => {
   const [selectedAthletes, setSelectedAthletes] = useState<any[]>([]);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
-  const { data, error, isLoading } = useSWR("/api/team", fetcher);
+  const { data, error, isLoading } = useSWR("/api/users", fetcher);
 
   const handleAthletesClick = (athletes: any) => {
+    if (!athletes) {
+      errorAlert("Athletes not found");
+      return;
+    }
     setSelectedAthletes(athletes);
     setModalOpen(true);
   };
@@ -34,4 +39,4 @@ const LandingPage: React.FC = () => {
   );
 };
 
-export default LandingPage;
+export default AdminPage;

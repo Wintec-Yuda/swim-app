@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const data = await getData("teams");
+    const data = await getData("users");
     return NextResponse.json(
       {
         success: true,
