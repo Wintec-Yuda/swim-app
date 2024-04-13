@@ -5,6 +5,7 @@ import { getDataByField } from "@/lib/firebase/service";
 import jwt from "jsonwebtoken";
 
 const handler = NextAuth({
+  secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
   },
