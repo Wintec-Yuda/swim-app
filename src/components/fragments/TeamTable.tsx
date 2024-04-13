@@ -1,4 +1,4 @@
-import { FaUsers } from "react-icons/fa";
+import { FaUsers } from "react-icons/fa6";
 
 interface Team {
   fullname: string;

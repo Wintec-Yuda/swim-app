@@ -5,6 +5,11 @@ const userInstance = {
     instance.post("/api/user/athlete", data, {
       headers: { Authorization: `Bearer ${token}` },
     }),
+
+  deleteAthlete: (index: string, token: string) =>
+    instance.delete(`/api/user/athlete/${index}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    }),
 };
 
 export default userInstance;

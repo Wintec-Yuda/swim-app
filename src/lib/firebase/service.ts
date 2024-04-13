@@ -61,3 +61,30 @@ export async function addAthlete(userId: string, athleteData: any) {
     return false;
   }
 }
+
+export async function deleteAthleteByIndex(userId: string, athleteIndex: number) {
+  try {
+    const userRef = doc(firestore, "users", userId);
+    const userSnapshot = await getDoc(userRef);
+
+    if (!userSnapshot.exists()) {
+      throw new Error("User document not found");
+    }
+
+    const userData = userSnapshot.data();
+    if (!userData || !userData.athletes || !Array.isArray(userData.athletes) || userData.athletes.length <= athleteIndex) {
+      throw new Error("Athlete not found at provided index");
+    }
+
+    const updatedAthletes = [...userData.athletes];
+    updatedAthletes.splice(athleteIndex, 1);
+
+    await updateDoc(userRef, {
+      athletes: updatedAthletes,
+    });
+
+    return true;
+  } catch (error) {
+    return false;
+  }
+}

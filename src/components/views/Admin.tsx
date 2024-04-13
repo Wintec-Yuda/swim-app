@@ -23,7 +23,7 @@ const AdminView = ({ teams }: any) => {
 
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
         <h2 className="text-xl font-bold mb-2">Athletes</h2>
-        <AthleteTable athletes={selectedAthletes} />
+        <AthleteTable athletes={selectedAthletes} setAthletes={setSelectedAthletes} />
       </Modal>
     </div>
   );

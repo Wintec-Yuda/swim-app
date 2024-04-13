@@ -38,7 +38,7 @@ const UserView = ({ user = [] }: any) => {
         </div>
       </div>
       <div>
-        <AthleteTable athletes={athletes} />
+        <AthleteTable athletes={athletes} setAthletes={setAthletes} />
       </div>
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
         <h2 className="text-xl font-bold mb-2">Add Athlete</h2>

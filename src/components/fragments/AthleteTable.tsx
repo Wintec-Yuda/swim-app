@@ -1,4 +1,9 @@
+import userInstance from "@/instances/user";
 import { formatDob } from "@/utils";
+import { errorAlert, successAlert } from "@/utils/sweetalert";
+import { useSession } from "next-auth/react";
+import { FaRegTrashCan } from "react-icons/fa6";
+import Swal from "sweetalert2";
 
 interface Athlete {
   fullname: string;
@@ -10,9 +15,43 @@ interface Athlete {
 
 interface Props {
   athletes: Athlete[];
+  setAthletes: React.Dispatch<React.SetStateAction<Athlete[]>>;
 }
 
-const AthleteTable = ({ athletes }: Props) => {
+const AthleteTable = ({ athletes, setAthletes }: Props) => {
+  const session: any = useSession();
+  const token = session?.data?.token;
+  const role = session?.data?.user?.role;
+
+  const handleDelete = async (index: any) => {
+    const confirmed = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "No, cancel!",
+    });
+
+    if (confirmed.isConfirmed) {
+      try {
+        const response = await userInstance.deleteAthlete(index, token);
+        if (response.data.success) {
+          const updatedAthletes = [...athletes];
+          updatedAthletes.splice(index, 1);
+          setAthletes(updatedAthletes);
+          successAlert("Athlete deleted successfully");
+        } else {
+          errorAlert("Internal Server Error");
+        }
+      } catch (error) {
+        errorAlert("Internal Server Error");
+      }
+    }
+  };
+
   return (
     <div className="overflow-x-auto">
       <table className="table-auto w-full bg-white shadow-md rounded-lg">
@@ -23,6 +62,7 @@ const AthleteTable = ({ athletes }: Props) => {
             <th className="th-td">Place, Date of Birth</th>
             <th className="th-td">Gender</th>
             <th className="th-td">Group</th>
+            {role === "user" && <th className="th-td">Action</th>}
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
@@ -41,6 +81,13 @@ const AthleteTable = ({ athletes }: Props) => {
                 <td className="th-td">{formatDob(athlete.placeOfBirth, athlete.dob)}</td>
                 <td className="th-td">{athlete.gender}</td>
                 <td className="th-td">{athlete.group}</td>
+                {role === "user" && (
+                  <td className="th-td">
+                    <button className="btn-button bg-red-500 hover:bg-red-700" onClick={() => handleDelete(index)}>
+                      <FaRegTrashCan />
+                    </button>
+                  </td>
+                )}
               </tr>
             ))
           )}
