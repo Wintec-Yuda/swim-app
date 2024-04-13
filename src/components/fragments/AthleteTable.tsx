@@ -1,7 +1,7 @@
 interface Athlete {
-  name: string;
-  dob: string; // Anda mungkin ingin menggunakan tipe data Date
-  gender: string; // Anda mungkin ingin menggunakan tipe data enum untuk jenis kelamin
+  fullname: string;
+  dob: string;
+  gender: string;
   group: string;
 }
 
@@ -22,14 +22,23 @@ const AthleteTable = ({ athletes }: Props) => {
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {athletes.map((athlete, index) => (
-            <tr key={index} className="border-b border-sky-500 hover:bg-sky-100">
-              <td className="th-td">{athlete.name}</td>
-              <td className="th-td">{athlete.dob}</td>
-              <td className="th-td">{athlete.gender}</td>
-              <td className="th-td">{athlete.group}</td>
+          {athletes.length === 0 ? (
+            <tr>
+              <td className="th-td" colSpan={4}>
+                No data available
+              </td>
             </tr>
-          ))}
+          ) : (
+            athletes &&
+            athletes.map((athlete, index) => (
+              <tr key={index} className="border-b border-sky-500 hover:bg-sky-100">
+                <td className="th-td">{athlete.fullname}</td>
+                <td className="th-td">{athlete.dob}</td>
+                <td className="th-td">{athlete.gender}</td>
+                <td className="th-td">{athlete.group}</td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
     </div>

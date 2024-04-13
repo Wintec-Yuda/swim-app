@@ -4,7 +4,7 @@ import Navbar from "@/components/fragments/Navbar";
 import Sidebar from "@/components/fragments/Sidebar";
 import { SessionProvider } from "next-auth/react";
 
-const Layout = async ({ children }: { children: React.ReactNode }) => {
+const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <SessionProvider>
       <div className="flex h-screen bg-gray-100">

@@ -17,7 +17,10 @@ export async function POST(request: NextRequest) {
       );
     } else {
       if (!data.role) {
-        data.role = "member";
+        data.role = "user";
+      }
+      if (!data.athletes) {
+        data.athletes = [];
       }
 
       data.password = await bcrypt.hash(data.password, 10);
@@ -27,7 +30,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(
           {
             success: true,
-            message: "Registration successful",
+            message: "Registration successfully",
             data,
           },
           { status: 200 }

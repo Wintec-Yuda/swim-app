@@ -8,10 +8,10 @@ import { signIn } from "next-auth/react";
 const LoginPage = () => {
   const { push } = useRouter();
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: any) => {
     event.preventDefault();
 
-    const form = event.target as HTMLFormElement;
+    const form = event.target;
     try {
       const res = await signIn("credentials", {
         redirect: false,
@@ -21,7 +21,7 @@ const LoginPage = () => {
 
       if (res?.ok) {
         successAlert("Login successfully");
-        push("/user");
+        push("/admin");
       } else {
         errorAlert("Email or password is incorrect");
       }

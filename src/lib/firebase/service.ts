@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, updateDoc } from "firebase/firestore";
+import { addDoc, arrayUnion, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, updateDoc } from "firebase/firestore";
 import app from "./init";
 
 const firestore = getFirestore(app);
@@ -50,20 +50,12 @@ export async function addData(collectionName: string, data: any) {
   }
 }
 
-export async function updateData(collectionName: string, id: string, data: any) {
+export async function addAthlete(userId: string, athleteData: any) {
   try {
-    const docRef = doc(firestore, collectionName, id);
-    await updateDoc(docRef, data);
-    return true;
-  } catch (error) {
-    return false;
-  }
-}
-
-export async function deleteData(collectionName: string, id: string) {
-  try {
-    const docRef = doc(firestore, collectionName, id);
-    await deleteDoc(docRef);
+    const userRef = doc(firestore, "users", userId);
+    await updateDoc(userRef, {
+      athletes: arrayUnion(athleteData),
+    });
     return true;
   } catch (error) {
     return false;

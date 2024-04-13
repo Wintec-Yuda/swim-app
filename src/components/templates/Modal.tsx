@@ -6,7 +6,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-const Modal= ({ isOpen, onClose, children }: Props) => {
+const Modal = ({ isOpen, onClose, children }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(isOpen);
 
   const handleCloseModal = () => {

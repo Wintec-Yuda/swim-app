@@ -14,14 +14,22 @@ const RegisterPage = () => {
     const form = event.target as HTMLFormElement;
     const data = {
       fullname: form.fullname.value,
+      team: form.team.value,
+      phone: form.phone.value,
       email: form.email.value,
       password: form.password.value,
     };
 
     try {
-      const response = await authInstance.register(data);
-      successAlert(response.data.message);
-      push("/auth/login");
+      await authInstance
+        .register(data)
+        .then((response) => {
+          successAlert(response.data.message);
+          push("/auth/login");
+        })
+        .catch((error) => {
+          errorAlert(error.response.data.message);
+        });
     } catch (error) {
       errorAlert("Internal Server Error");
     }
