@@ -20,3 +20,14 @@ export const groupAthlete = (date: string) => {
 
   return group;
 };
+
+export const formatDob = (placeOfBirth: string, dateOfBirth: string) => {
+
+  const date = new Date(dateOfBirth);
+  const year = date.getFullYear();
+  const month = ("0" + (date.getMonth() + 1)).slice(-2);
+  const day = ("0" + date.getDate()).slice(-2);
+  const formattedDateOfBirth = `${day}-${month}-${year}`;
+
+  return `${placeOfBirth}, ${formattedDateOfBirth}`;
+};

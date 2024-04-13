@@ -1,13 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AthleteTable from "../fragments/AthleteTable";
 import Modal from "../templates/Modal";
 import AthleteForm from "../fragments/AthleteForm";
 
 const UserView = ({ user = [] }: any) => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [athletes, setAthletes] = useState<any[]>(user?.athletes || []);
 
+  useEffect(() => {
+    setAthletes(user?.athletes || []);
+  }, []);
   const handleAddAthleteClick = () => {
     setModalOpen(true);
+  };
+
+  const handleCloseModal = (newAthlete: any) => {
+    setModalOpen(false);
+    if (newAthlete) {
+      setAthletes((prevAthletes) => [...prevAthletes, newAthlete]);
+    }
   };
 
   return (
@@ -27,11 +38,11 @@ const UserView = ({ user = [] }: any) => {
         </div>
       </div>
       <div>
-        <AthleteTable athletes={user?.athletes} />
+        <AthleteTable athletes={athletes} />
       </div>
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
         <h2 className="text-xl font-bold mb-2">Add Athlete</h2>
-        <AthleteForm />
+        <AthleteForm onClose={handleCloseModal} />
       </Modal>
     </>
   );

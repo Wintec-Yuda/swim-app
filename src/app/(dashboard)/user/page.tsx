@@ -9,8 +9,9 @@ import UserView from "@/components/views/User";
 const AdminPage: React.FC = () => {
   const session: any = useSession();
   const id = session?.data?.user?.id;
+  const token = session?.data?.token;
 
-  const { data, error, isLoading } = useSWR(`/api/user/${id}`, fetcher);
+  const { data, error, isLoading } = useSWR(`/api/user/${id}`, () => fetcher(`/api/user/${id}`, token));
 
   return <main className="container mx-auto p-4">{isLoading ? <Loading /> : <UserView user={data?.data} />}</main>;
 };

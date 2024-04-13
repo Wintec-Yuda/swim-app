@@ -4,16 +4,15 @@ import { useSession } from "next-auth/react";
 import userInstance from "@/instances/user";
 import { errorAlert, successAlert } from "@/utils/sweetalert";
 
-const AthleteForm = () => {
+const AthleteForm = ({ onClose }: { onClose: (data: any) => void }) => {
   const session: any = useSession();
-  const id = session?.data?.user?.id;
+  const token = session?.data.token;
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const form: any = event.target as HTMLFormElement;
     const data: any = {
-      id: form.id.value,
       fullname: form.fullname.value,
       placeOfBirth: form.placeOfBirth.value,
       dob: form.dob.value,
@@ -24,12 +23,13 @@ const AthleteForm = () => {
 
     try {
       await userInstance
-        .addAthlete(data)
+        .addAthlete(data, token)
         .then((response) => {
           successAlert(response.data.message);
+          onClose(response.data.data);
         })
         .catch((error) => {
-          errorAlert(error.response.data.message);
+          errorAlert("Internal Server Error");
         });
     } catch (error) {
       errorAlert("Internal Server Error");
@@ -38,7 +38,6 @@ const AthleteForm = () => {
 
   return (
     <form method="POST" className="mt-8 w-96" onSubmit={handleSubmit}>
-      <input id="id" name="id" type="hidden" value={id} />
       <Input label="Full name" name="fullname" type="text" required placeholder="Full name" />
       <Input label="Place of birth" name="placeOfBirth" type="text" required placeholder="Kediri" />
       <Input label="Date of birth" name="dob" type="date" required />

@@ -29,7 +29,7 @@ const TeamTable = ({ teams, handleAthletesClick }: Props) => {
           </tr>
         </thead>
         <tbody className="text-gray-600 text-sm font-light">
-          {teams.map(
+          {teams && teams.map(
             (team, index) =>
               team.role !== "admin" && (
                 <tr key={index} className="border-b border-sky-500 hover:bg-sky-100">

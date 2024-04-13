@@ -1,35 +1,40 @@
 import { addAthlete } from "@/lib/firebase/service";
 import { NextResponse, NextRequest } from "next/server";
+import jwt from "jsonwebtoken";
 
 export async function POST(request: NextRequest) {
   try {
     const data = await request.json();
+    const token: any = request.headers.get("authorization")?.split(" ")[1];
+    const decoded: any = jwt.verify(token, process.env.NEXTAUTH_SECRET || "");
 
-    const athleteData = {
-      fullname: data.fullname,
-      placeOfBirth: data.placeOfBirth,
-      dob: data.dob,
-      gender: data.gender,
-      group: data.group,
-    };
-
-    const status = await addAthlete(data.id, athleteData);
-    if (status) {
-      return NextResponse.json(
-        {
-          success: true,
-          message: "Add athlete successfully",
-          data,
-        },
-        { status: 200 }
-      );
+    if (decoded && decoded.role === "user") {
+      const status = await addAthlete(decoded.id, data);
+      if (status) {
+        return NextResponse.json(
+          {
+            success: true,
+            message: "Add athlete successfully",
+            data,
+          },
+          { status: 200 }
+        );
+      } else {
+        return NextResponse.json(
+          {
+            success: false,
+            message: "Add athlete failed",
+          },
+          { status: 500 }
+        );
+      }
     } else {
       return NextResponse.json(
         {
           success: false,
-          message: "Add athlete failed",
+          message: "Unauthorized",
         },
-        { status: 500 }
+        { status: 401 }
       );
     }
   } catch (error) {
