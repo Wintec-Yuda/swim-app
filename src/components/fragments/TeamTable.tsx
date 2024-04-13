@@ -29,21 +29,19 @@ const TeamTable = ({ teams, handleAthletesClick }: Props) => {
           </tr>
         </thead>
         <tbody className="text-gray-600 text-sm font-light">
-          {teams && teams.map(
-            (team, index) =>
-              team.role !== "admin" && (
-                <tr key={index} className="border-b border-sky-500 hover:bg-sky-100">
-                  <td className="th-td">{index + 1}</td>
-                  <td className="th-td">{team.fullname}</td>
-                  <td className="th-td">{team.email}</td>
-                  <td className="th-td">
-                    <div className="flex justify-center">
-                      <FaUsers className="cursor-pointer text-blue-500 text-xl" onClick={() => handleAthletesClick(team.athletes)} />
-                    </div>
-                  </td>
-                </tr>
-              )
-          )}
+          {teams &&
+            teams.map((team, index) => (
+              <tr key={index} className="border-b border-sky-500 hover:bg-sky-100">
+                <td className="th-td">{index + 1}</td>
+                <td className="th-td">{team.fullname}</td>
+                <td className="th-td">{team.email}</td>
+                <td className="th-td">
+                  <div className="flex justify-center">
+                    <FaUsers className="cursor-pointer text-blue-500 text-xl" onClick={() => handleAthletesClick(team.athletes)} />
+                  </div>
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>

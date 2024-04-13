@@ -9,7 +9,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <div className="flex h-screen bg-gray-100">
         <div className="flex flex-col flex-1">
           <Navbar />
-          <div className="flex-1 p-4">{children}</div>
+          {children}
         </div>
       </div>
     </SessionProvider>

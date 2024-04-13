@@ -9,10 +9,11 @@ export async function GET(request: NextRequest) {
 
     if (decoded && decoded.role === "admin") {
       const data = await getData("users");
+      const filteredData = data.filter((user: any) => user.role !== "admin");
       return NextResponse.json(
         {
           success: true,
-          data,
+          data: filteredData,
         },
         { status: 200 }
       );
