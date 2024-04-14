@@ -2,7 +2,6 @@
 
 import useSWR from "swr";
 import { fetcher } from "@/utils/fetcher";
-import Loading from "@/components/fragments/Loading";
 import AdminView from "@/components/views/Admin";
 import { useSession } from "next-auth/react";
 

@@ -4,7 +4,6 @@ import { confirmAlert, errorAlert, successAlert } from "@/utils/sweetalert";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { FaRegTrashCan } from "react-icons/fa6";
-import Swal from "sweetalert2";
 import Loading from "./Loading";
 
 interface Athlete {
