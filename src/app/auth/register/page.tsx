@@ -4,12 +4,15 @@ import { useRouter } from "next/navigation";
 import authInstance from "@/instances/auth";
 import RegisterView from "@/components/views/Register";
 import { errorAlert, successAlert } from "@/utils/sweetalert";
+import { useState } from "react";
 
 const RegisterPage = () => {
   const { push } = useRouter();
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setLoading(true);
 
     const form = event.target as HTMLFormElement;
     const data = {
@@ -32,10 +35,12 @@ const RegisterPage = () => {
         });
     } catch (error) {
       errorAlert("Internal Server Error");
+    } finally {
+      setLoading(false);
     }
   };
 
-  return <RegisterView handleSubmit={handleSubmit} />;
+  return <RegisterView handleSubmit={handleSubmit} loading={loading} />;
 };
 
 export default RegisterPage;

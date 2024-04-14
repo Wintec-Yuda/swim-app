@@ -3,13 +3,18 @@ import Input from "../ui/Input";
 import { useSession } from "next-auth/react";
 import userInstance from "@/instances/user";
 import { errorAlert, successAlert } from "@/utils/sweetalert";
+import { useState } from "react";
+import Loading from "./Loading";
 
 const AthleteForm = ({ onClose }: { onClose: (data: any) => void }) => {
+  const [loading, setLoading] = useState(false);
+
   const session: any = useSession();
   const token = session?.data.token;
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setLoading(true);
 
     const form: any = event.target as HTMLFormElement;
     const data: any = {
@@ -33,6 +38,8 @@ const AthleteForm = ({ onClose }: { onClose: (data: any) => void }) => {
         });
     } catch (error) {
       errorAlert("Internal Server Error");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -51,9 +58,10 @@ const AthleteForm = ({ onClose }: { onClose: (data: any) => void }) => {
         </select>
       </div>
       <hr className="border-gray-400 shadow-sm" />
-      <button type="submit" className="btn-submit mt-10">
+      <button type="submit" className="btn-submit mt-10" disabled={loading}>
         Add
       </button>
+      {loading && <Loading />}
     </form>
   );
 };

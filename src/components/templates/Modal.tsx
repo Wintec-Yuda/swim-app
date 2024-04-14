@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { AiOutlineClose } from "react-icons/ai";
 
 interface Props {
   isOpen: boolean;
@@ -25,9 +26,9 @@ const Modal = ({ isOpen, onClose, children }: Props) => {
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div className="fixed inset-0 bg-black opacity-50 cursor-pointer" onClick={handleCloseModal}></div>
-          <div className="bg-white p-4 rounded-lg z-50">
-            <button className="absolute top-0 right-0 m-4 p-2 rounded-full bg-gray-300 hover:bg-gray-400 focus:outline-none" onClick={handleCloseModal}>
-              Close
+          <div className="bg-white p-10 rounded-lg z-50">
+            <button className="absolute top-0 right-0 m-4 p-2 rounded-full bg-red-500 hover:bg-red-700 text-slate-200 focus:outline-none" onClick={handleCloseModal}>
+              <AiOutlineClose size={25} />
             </button>
             {children}
           </div>

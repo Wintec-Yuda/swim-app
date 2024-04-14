@@ -4,12 +4,15 @@ import { useRouter } from "next/navigation";
 import { errorAlert, successAlert } from "@/utils/sweetalert";
 import LoginView from "@/components/views/Login";
 import { signIn } from "next-auth/react";
+import { useState } from "react";
 
 const LoginPage = () => {
   const { push } = useRouter();
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
+    setLoading(true);
 
     const form = event.target;
     try {
@@ -27,10 +30,12 @@ const LoginPage = () => {
       }
     } catch {
       errorAlert("Internal Server Error");
+    } finally {
+      setLoading(false);
     }
   };
 
-  return <LoginView handleSubmit={handleSubmit} />;
+  return <LoginView handleSubmit={handleSubmit} loading={loading} />;
 };
 
 export default LoginPage;

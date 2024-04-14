@@ -29,7 +29,7 @@ const LandingPage = () => {
             <Link href="/auth/login" className="bg-white text-blue-500 py-2 px-4 rounded-md hover:bg-blue-200 mr-4">
               Login
             </Link>
-            <Link href="/auth/login" className="bg-white text-blue-500 py-2 px-4 rounded-md hover:bg-blue-200">
+            <Link href="/auth/register" className="bg-white text-blue-500 py-2 px-4 rounded-md hover:bg-blue-200">
               Register
             </Link>
           </div>

@@ -1,9 +1,11 @@
 import userInstance from "@/instances/user";
 import { formatDob } from "@/utils";
-import { errorAlert, successAlert } from "@/utils/sweetalert";
+import { confirmAlert, errorAlert, successAlert } from "@/utils/sweetalert";
 import { useSession } from "next-auth/react";
+import { useState } from "react";
 import { FaRegTrashCan } from "react-icons/fa6";
 import Swal from "sweetalert2";
+import Loading from "./Loading";
 
 interface Athlete {
   fullname: string;
@@ -19,23 +21,17 @@ interface Props {
 }
 
 const AthleteTable = ({ athletes, setAthletes }: Props) => {
+  const [loading, setLoading] = useState(false);
+
   const session: any = useSession();
   const token = session?.data?.token;
   const role = session?.data?.user?.role;
 
   const handleDelete = async (index: any) => {
-    const confirmed = await Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonText: "No, cancel!",
-    });
-
-    if (confirmed.isConfirmed) {
+    const confirmed = await confirmAlert("Yes, delete it!");
+    
+    if (confirmed) {
+      setLoading(true);
       try {
         const response = await userInstance.deleteAthlete(index, token);
         if (response.data.success) {
@@ -48,6 +44,8 @@ const AthleteTable = ({ athletes, setAthletes }: Props) => {
         }
       } catch (error) {
         errorAlert("Internal Server Error");
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -83,7 +81,7 @@ const AthleteTable = ({ athletes, setAthletes }: Props) => {
                 <td className="th-td">{athlete.group}</td>
                 {role === "user" && (
                   <td className="th-td">
-                    <button className="btn-button bg-red-500 hover:bg-red-700" onClick={() => handleDelete(index)}>
+                    <button className="btn-button bg-red-500 hover:bg-red-700" onClick={() => handleDelete(index)} disabled={loading}>
                       <FaRegTrashCan />
                     </button>
                   </td>
@@ -93,6 +91,7 @@ const AthleteTable = ({ athletes, setAthletes }: Props) => {
           )}
         </tbody>
       </table>
+      {loading && <Loading />}
     </div>
   );
 };

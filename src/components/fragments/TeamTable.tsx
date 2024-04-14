@@ -1,4 +1,5 @@
 import { FaUsers } from "react-icons/fa6";
+import Loading from "./Loading";
 
 interface Team {
   fullname: string;
@@ -14,9 +15,10 @@ interface Team {
 interface Props {
   teams: Team[];
   handleAthletesClick: (athletes: any[]) => void;
+  isLoading: boolean;
 }
 
-const TeamTable = ({ teams, handleAthletesClick }: Props) => {
+const TeamTable = ({ teams, handleAthletesClick, isLoading }: Props) => {
   return (
     <div className="overflow-x-auto">
       <table className="table-auto w-full bg-white shadow-md rounded-lg">
@@ -29,8 +31,14 @@ const TeamTable = ({ teams, handleAthletesClick }: Props) => {
           </tr>
         </thead>
         <tbody className="text-gray-600 text-sm font-light">
-          {teams &&
-            teams.map((team, index) => (
+          {isLoading ? (
+            <tr>
+              <td colSpan={4} className="text-center">
+                <Loading />
+              </td>
+            </tr>
+          ) : (
+            teams && teams.map((team, index) => (
               <tr key={index} className="border-b border-sky-500 hover:bg-sky-100">
                 <td className="th-td">{index + 1}</td>
                 <td className="th-td">{team.fullname}</td>
@@ -41,7 +49,8 @@ const TeamTable = ({ teams, handleAthletesClick }: Props) => {
                   </div>
                 </td>
               </tr>
-            ))}
+            ))
+          )}
         </tbody>
       </table>
     </div>

@@ -1,12 +1,9 @@
 import React from "react";
 import AuthLayout from "../templates/Auth";
 import Input from "../ui/Input";
+import Loading from "../fragments/Loading";
 
-type RegisterViewProps = {
-  handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
-};
-
-const RegisterView = ({ handleSubmit }: RegisterViewProps) => {
+const RegisterView = ({ handleSubmit, loading }: any) => {
   return (
     <AuthLayout title="Register" link="/auth/login" linkText="Already have an account?">
       <form className="mt-8 space-y-6" onSubmit={handleSubmit} method="POST">
@@ -18,11 +15,12 @@ const RegisterView = ({ handleSubmit }: RegisterViewProps) => {
           <Input label="Password" name="password" type="password" required placeholder="********" />
         </div>
         <div>
-          <button type="submit" className="btn-submit">
+          <button type="submit" className="btn-submit" disabled={loading}>
             Register
           </button>
         </div>
       </form>
+      {loading && <Loading />}
     </AuthLayout>
   );
 };
