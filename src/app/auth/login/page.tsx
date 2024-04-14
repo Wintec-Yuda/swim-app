@@ -24,7 +24,7 @@ const LoginPage = () => {
 
       if (res?.ok) {
         successAlert("Login successfully");
-        push("/admin");
+        push("/teams");
       } else {
         errorAlert("Email or password is incorrect");
       }

@@ -2,6 +2,8 @@ import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse, NextFetchEvent, NextMiddleware } from "next/server";
 
 const authPage = ["auth"];
+const onlyAdmin = ["teams", "events"];
+const onlyUser = ["athletes"];
 
 export default function withAuth(middleware: NextMiddleware, requireAuth: string[] = []) {
   return async (req: NextRequest, next: NextFetchEvent) => {
@@ -22,13 +24,13 @@ export default function withAuth(middleware: NextMiddleware, requireAuth: string
       if (token) {
         switch (token.role) {
           case "admin":
-            if (pathname !== "admin") {
-              return NextResponse.redirect(new URL("/admin", req.url));
+            if (!onlyAdmin.includes(pathname)) {
+              return NextResponse.redirect(new URL("/teams", req.url));
             }
             break;
           case "user":
-            if (pathname !== "user") {
-              return NextResponse.redirect(new URL("/user", req.url));
+            if (!onlyUser.includes(pathname)) {
+              return NextResponse.redirect(new URL("/athletes", req.url));
             }
             break;
           default:
@@ -36,7 +38,7 @@ export default function withAuth(middleware: NextMiddleware, requireAuth: string
         }
 
         if (authPage.includes(pathname)) {
-          return NextResponse.redirect(new URL("/user", req.url));
+          return NextResponse.redirect(new URL("/athletes", req.url));
         }
       }
     }
