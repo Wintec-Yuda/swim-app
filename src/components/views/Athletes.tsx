@@ -3,12 +3,12 @@ import AthleteTable from "../fragments/AthleteTable";
 import Modal from "../templates/Modal";
 import AthleteForm from "../fragments/AthleteForm";
 
-const UserView = ({ user = [] }: any) => {
+const AthletesView = ({ user = [] }: any) => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
-  const [athletes, setAthletes] = useState<any[]>(user?.athletes || []);
+  const [athletes, setAthletes] = useState<any[]>(user.athletes || []);
 
   useEffect(() => {
-    setAthletes(user?.athletes || []);
+    setAthletes(user.athletes || []);
   }, []);
   const handleAddAthleteClick = () => {
     setModalOpen(true);
@@ -25,7 +25,7 @@ const UserView = ({ user = [] }: any) => {
     <>
       <div className="flex justify-between px-10">
         <div className="flex gap-10">
-          <h1 className="text-3xl font-bold mb-4">Team {user?.team}</h1>
+          <h1 className="text-3xl font-bold mb-4">Team {user.team}</h1>
           <div>
             <button className="btn-button" onClick={handleAddAthleteClick}>
               Add Athlete
@@ -33,8 +33,8 @@ const UserView = ({ user = [] }: any) => {
           </div>
         </div>
         <div>
-          <p>Coach: {user?.fullname}</p>
-          <p>Phone: {user?.phone}</p>
+          <p>Coach: {user.fullname}</p>
+          <p>Phone: {user.phone}</p>
         </div>
       </div>
       <div>
@@ -48,4 +48,4 @@ const UserView = ({ user = [] }: any) => {
   );
 };
 
-export default UserView;
+export default AthletesView;

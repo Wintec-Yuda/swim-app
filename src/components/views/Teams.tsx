@@ -4,7 +4,7 @@ import TeamTable from "../fragments/TeamTable";
 import { errorAlert } from "@/utils/sweetalert";
 import AthleteTable from "../fragments/AthleteTable";
 
-const AdminView = ({ teams, isLoading }: any) => {
+const TeamsView = ({ teams }: any) => {
   const [selectedAthletes, setSelectedAthletes] = useState<any[]>([]);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
@@ -19,7 +19,7 @@ const AdminView = ({ teams, isLoading }: any) => {
 
   return (
     <div>
-      <TeamTable teams={teams} handleAthletesClick={handleAthletesClick} isLoading={isLoading} />
+      <TeamTable teams={teams} handleAthletesClick={handleAthletesClick} />
 
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
         <h2 className="text-xl font-bold mb-2">Athletes</h2>
@@ -29,4 +29,4 @@ const AdminView = ({ teams, isLoading }: any) => {
   );
 };
 
-export default AdminView;
+export default TeamsView;

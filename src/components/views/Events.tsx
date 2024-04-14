@@ -1,7 +1,14 @@
-const EventsView = () => {
-  return (
-    <div>EventsView</div>
-  )
-}
+import EventTable from "../fragments/EventTable";
 
-export default EventsView
+const EventsView = ({ events }: any) => {
+  return (
+    <>
+      <button className="btn-button mb-4 ms-10">Add Event</button>
+      <div>
+        <EventTable events={events} />
+      </div>
+    </>
+  );
+};
+
+export default EventsView;
