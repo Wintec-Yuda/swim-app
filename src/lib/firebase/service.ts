@@ -50,6 +50,15 @@ export async function addData(collectionName: string, data: any) {
   }
 }
 
+export async function deleteDataById(collectionName: string, id: string) {
+  try {
+    await deleteDoc(doc(firestore, collectionName, id));
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
 export async function addAthlete(userId: string, athleteData: any) {
   try {
     const userRef = doc(firestore, "users", userId);

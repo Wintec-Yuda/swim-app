@@ -1,20 +1,20 @@
 import { NextResponse, NextRequest } from "next/server";
 import jwt from "jsonwebtoken";
-import { deleteAthleteByIndex } from "@/lib/firebase/service";
+import { deleteDataById } from "@/lib/firebase/service";
 
 export async function DELETE(request: NextRequest) {
   try {
     const token: any = request.headers.get("authorization")?.split(" ")[1];
     const decoded: any = jwt.verify(token, process.env.NEXTAUTH_SECRET || "");
-    const index: any = request.url.split("/").pop();
+    const id: any = request.url.split("/").pop();
 
-    if (decoded && decoded.role === "user") {
-      const status = await deleteAthleteByIndex(decoded.id, index);
+    if (decoded && decoded.role === "admin") {
+      const status = await deleteDataById("events", id);
       if (status) {
         return NextResponse.json(
           {
             success: true,
-            message: "Delete athlete successfully",
+            message: "Delete event successfully",
           },
           { status: 200 }
         );
@@ -22,7 +22,7 @@ export async function DELETE(request: NextRequest) {
         return NextResponse.json(
           {
             success: false,
-            message: "Delete athlete failed",
+            message: "Delete event failed",
           },
           { status: 500 }
         );

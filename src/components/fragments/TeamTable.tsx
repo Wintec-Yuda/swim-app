@@ -1,5 +1,4 @@
 import { FaUsers } from "react-icons/fa6";
-import Loading from "./Loading";
 
 interface Team {
   fullname: string;

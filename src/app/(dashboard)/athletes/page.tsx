@@ -9,11 +9,10 @@ import AthletesView from "@/components/views/Athletes";
 const AthletesPage: React.FC = () => {
   const session: any = useSession();
   const id = session?.data?.user?.id;
-  const token = session?.data?.token;
 
-  const { data, error, isLoading } = useSWR(`/api/user/${id}`, () => fetcher(`/api/user/${id}`, token));
+  const { data, error, isLoading } = useSWR(id ? `/api/user/${id}` : null, fetcher);
 
-  return isLoading ? <Loading /> : <AthletesView user={data?.data} />;
+  return id && isLoading ? <Loading /> : <AthletesView user={data?.data} />;
 };
 
 export default AthletesPage;
