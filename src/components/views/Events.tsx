@@ -29,7 +29,7 @@ const EventsView = ({ data }: any) => {
           Add Event
         </button>
         <div>
-          <EventTable events={events} setEvents={setEvents} />
+          <EventTable events={events} setEvents={setEvents} selectedUser={null} />
         </div>
       </div>
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>

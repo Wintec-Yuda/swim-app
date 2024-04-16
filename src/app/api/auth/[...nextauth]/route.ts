@@ -29,7 +29,6 @@ const handler = NextAuth({
           return {
             id: user.id,
             fullname: user.fullname,
-            email: user.email,
             role: user.role,
           };
         }
@@ -41,27 +40,23 @@ const handler = NextAuth({
   callbacks: {
     async jwt({ token, account, profile, user }: any) {
       if (account?.provider === "credentials") {
-        token.email = user.email;
+        token.id = user.id;
         token.fullname = user.fullname;
         token.role = user.role;
-        token.id = user.id;
       }
 
       return token;
     },
 
     async session({ session, token }: any) {
-      if ("email" in token) {
-        session.user.email = token.email;
+      if ("id" in token) {
+        session.user.id = token.id;
       }
       if ("fullname" in token) {
         session.user.fullname = token.fullname;
       }
       if ("role" in token) {
         session.user.role = token.role;
-      }
-      if ("id" in token) {
-        session.user.id = token.id;
       }
 
       const accessToken = jwt.sign(token, process.env.NEXTAUTH_SECRET || "", {

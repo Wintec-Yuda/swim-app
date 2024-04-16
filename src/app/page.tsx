@@ -3,7 +3,7 @@ import Link from "next/link";
 const LandingPage = () => {
   return (
     <div className="px-5 bg-slate-100">
-      <header className="bg-blue-500 py-4 px-5 md:px-10">
+      <header className="bg-gray-900 py-4 px-5 md:px-10">
         <div className="mx-auto flex flex-col md:flex-row justify-between items-center">
           <h1 className="text-white text-2xl font-semibold mb-2 md:mb-0">Lomba Renang</h1>
           <nav className="mb-4 md:mb-0">
@@ -21,10 +21,10 @@ const LandingPage = () => {
             </ul>
           </nav>
           <div className="flex">
-            <Link href="/auth/login" className="bg-white text-blue-500 py-2 px-4 rounded-md hover:bg-blue-200 mr-4">
+            <Link href="/auth/login" className="bg-white text-gray-900 py-2 px-4 rounded-md hover:bg-gray-400 hover:font-bold mr-4">
               Login
             </Link>
-            <Link href="/auth/register" className="bg-white text-blue-500 py-2 px-4 rounded-md hover:bg-blue-200">
+            <Link href="/auth/register" className="bg-white text-gray-900 py-2 px-4 rounded-md hover:bg-gray-400 hover:font-bold">
               Register
             </Link>
           </div>

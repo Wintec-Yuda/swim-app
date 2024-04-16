@@ -2,9 +2,13 @@ import userInstance from "@/instances/user";
 import { formatDob } from "@/utils";
 import { confirmAlert, errorAlert, successAlert } from "@/utils/sweetalert";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaRegTrashCan } from "react-icons/fa6";
 import Loading from "../Loading";
+import useSWR from "swr";
+import { fetcher } from "@/utils/fetcher";
+import Modal from "@/components/templates/Modal";
+import EventTable from "./Event";
 
 interface Athlete {
   fullname: string;
@@ -21,6 +25,16 @@ interface Props {
 
 const AthleteTable = ({ athletes, setAthletes }: Props) => {
   const [loading, setLoading] = useState(false);
+  const [events, setEvents] = useState<any[]>([]);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [eventsByGender, setEventsByGender] = useState<any[]>([]);
+  const [selectedUser, setSelectedUser] = useState<any>(null);
+
+  const { data, error, isLoading } = useSWR("/api/events", fetcher);
+
+  useEffect(() => {
+    setEvents(data?.data || []);
+  }, []);
 
   const session: any = useSession();
   const token = session?.data?.token;
@@ -49,6 +63,13 @@ const AthleteTable = ({ athletes, setAthletes }: Props) => {
     }
   };
 
+  const handleJoinEvent = (user: any) => {
+    const filteredEvents = events.filter((event) => event.gender === user.gender);
+    setEventsByGender(filteredEvents);
+    setSelectedUser(user);
+    setModalOpen(true);
+  };
+
   return (
     <div className="overflow-x-auto">
       <table className="table-auto w-full bg-white shadow-md rounded-lg">
@@ -59,6 +80,7 @@ const AthleteTable = ({ athletes, setAthletes }: Props) => {
             <th className="th-td">Place, Date of Birth</th>
             <th className="th-td">Gender</th>
             <th className="th-td">Group</th>
+            {role === "user" && <th className="th-td">Join event</th>}
             {role === "user" && <th className="th-td">Action</th>}
           </tr>
         </thead>
@@ -80,6 +102,24 @@ const AthleteTable = ({ athletes, setAthletes }: Props) => {
                 <td className="th-td">{athlete.group}</td>
                 {role === "user" && (
                   <td className="th-td">
+                    <button
+                      className="btn-button bg-green-700 hover:bg-green-900"
+                      onClick={() =>
+                        handleJoinEvent({
+                          name: athlete.fullname,
+                          placeOfBirth: athlete.placeOfBirth,
+                          dob: athlete.dob,
+                          gender: athlete.gender,
+                          group: athlete.group,
+                        })
+                      }
+                    >
+                      Daftar event
+                    </button>
+                  </td>
+                )}
+                {role === "user" && (
+                  <td className="th-td">
                     <button className="btn-button bg-red-500 hover:bg-red-700" onClick={() => handleDelete(index)} disabled={loading}>
                       <FaRegTrashCan />
                     </button>
@@ -91,6 +131,12 @@ const AthleteTable = ({ athletes, setAthletes }: Props) => {
         </tbody>
       </table>
       {loading && <Loading />}
+      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
+        <div className="p-4">
+          <h2 className="text-xl font-bold mb-4">Add athlete to event</h2>
+          <EventTable events={eventsByGender} setEvents={setEventsByGender} user={selectedUser} />
+        </div>
+      </Modal>
     </div>
   );
 };

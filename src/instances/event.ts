@@ -6,6 +6,7 @@ const eventInstance = {
     instance.post("/api/events", data, {
       headers: { Authorization: `Bearer ${token}` },
     }),
+
   deleteEvent: (id: string, token: string) =>
     instance.delete(`/api/events/${id}`, {
       headers: { Authorization: `Bearer ${token}` },

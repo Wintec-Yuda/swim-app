@@ -4,14 +4,14 @@ import jwt from "jsonwebtoken";
 
 export async function GET() {
   try {
-      const data = await getData("events");
-      return NextResponse.json(
-        {
-          success: true,
-          data: data,
-        },
-        { status: 200 }
-      );
+    const data = await getData("events");
+    return NextResponse.json(
+      {
+        success: true,
+        data: data,
+      },
+      { status: 200 }
+    );
   } catch (error) {
     return NextResponse.json(
       {
@@ -30,6 +30,10 @@ export async function POST(request: NextRequest) {
 
     if (decoded && decoded.role === "admin") {
       const data = await request.json();
+
+      if (!data.athletes) {
+        data.athletes = [];
+      }
 
       const status = await addData("events", data);
       if (status) {

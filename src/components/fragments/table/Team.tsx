@@ -1,6 +1,6 @@
 import { FaUsers } from "react-icons/fa6";
 
-interface Team {
+interface User {
   fullname: string;
   email: string;
   role: string;
@@ -12,11 +12,11 @@ interface Team {
 }
 
 interface Props {
-  teams: Team[];
-  handleAthletesClick: (athletes: any[]) => void;
+  users: User[];
+  handleAthletes: (athletes: any[]) => void;
 }
 
-const TeamTable = ({ teams, handleAthletesClick }: Props) => {
+const TeamTable = ({ users, handleAthletes }: Props) => {
   return (
     <div className="overflow-x-auto">
       <table className="table-auto w-full bg-white shadow-md rounded-lg">
@@ -29,22 +29,22 @@ const TeamTable = ({ teams, handleAthletesClick }: Props) => {
           </tr>
         </thead>
         <tbody className="text-gray-600 text-sm font-light">
-          {teams && teams.length === 0 ? (
+          {users && users.length === 0 ? (
             <tr>
               <td className="th-td" colSpan={4}>
                 No data available
               </td>
             </tr>
           ) : (
-            teams &&
-            teams.map((team, index) => (
+            users &&
+            users.map((user, index) => (
               <tr key={index} className="border-b border-sky-500 hover:bg-sky-100">
                 <td className="th-td">{index + 1}</td>
-                <td className="th-td">{team.fullname}</td>
-                <td className="th-td">{team.email}</td>
+                <td className="th-td">{user.fullname}</td>
+                <td className="th-td">{user.email}</td>
                 <td className="th-td">
                   <div className="flex justify-center">
-                    <FaUsers className="cursor-pointer text-blue-500 text-xl sm:text-2xl" onClick={() => handleAthletesClick(team.athletes)} />
+                    <FaUsers className="cursor-pointer text-blue-500 text-xl sm:text-2xl" onClick={() => handleAthletes(user.athletes)} />
                   </div>
                 </td>
               </tr>

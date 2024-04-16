@@ -8,12 +8,8 @@ const AthletesView = ({ user = [] }: any) => {
   const [athletes, setAthletes] = useState<any[]>(user.athletes || []);
 
   useEffect(() => {
-    setAthletes(user.athletes || []);
+    setAthletes(user?.athletes || []);
   }, []);
-
-  const handleAddAthleteClick = () => {
-    setModalOpen(true);
-  };
 
   const handleCloseModal = (newAthlete: any) => {
     setModalOpen(false);
@@ -28,7 +24,7 @@ const AthletesView = ({ user = [] }: any) => {
         <div className="flex justify-between items-center mb-8">
           <div className="flex gap-4 items-center">
             <h1 className="text-3xl font-bold">Team {user.team}</h1>
-            <button className="btn-button" onClick={handleAddAthleteClick}>
+            <button className="btn-button" onClick={() => setModalOpen(true)}>
               Add Athlete
             </button>
           </div>

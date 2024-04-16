@@ -59,9 +59,9 @@ export async function deleteDataById(collectionName: string, id: string) {
   }
 }
 
-export async function addAthlete(userId: string, athleteData: any) {
+export async function addAthlete(collectionName: string, userId: string, athleteData: any) {
   try {
-    const userRef = doc(firestore, "users", userId);
+    const userRef = doc(firestore, collectionName, userId);
     await updateDoc(userRef, {
       athletes: arrayUnion(athleteData),
     });

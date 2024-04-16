@@ -4,11 +4,11 @@ import TeamTable from "../fragments/table/Team";
 import { errorAlert } from "@/utils/sweetalert";
 import AthleteTable from "../fragments/table/Athlete";
 
-const TeamsView = ({ teams }: any) => {
+const TeamsView = ({ users }: any) => {
   const [selectedAthletes, setSelectedAthletes] = useState<any[]>([]);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
-  const handleAthletesClick = (athletes: any) => {
+  const handleAthletes = (athletes: any) => {
     if (!athletes) {
       errorAlert("Athletes not found");
       return;
@@ -20,7 +20,7 @@ const TeamsView = ({ teams }: any) => {
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8">
       <div className="py-8">
-        <TeamTable teams={teams} handleAthletesClick={handleAthletesClick} />
+        <TeamTable users={users} handleAthletes={handleAthletes} />
       </div>
 
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
