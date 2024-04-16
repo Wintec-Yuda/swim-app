@@ -1,12 +1,18 @@
-import Input from "../ui/Input";
 import { useSession } from "next-auth/react";
 import { errorAlert, successAlert } from "@/utils/sweetalert";
 import { useState } from "react";
-import Loading from "./Loading";
+import Loading from "../Loading";
 import eventInstance from "@/instances/event";
+import NumberSelect from "../../ui/NumberSelect";
+import StyleSelect from "../../ui/StyleSelect";
+import GenderSelect from "../../ui/GenderSelect";
+import useInput from "@/hooks/useInput";
 
 const EventForm = ({ onClose }: { onClose: (data: any) => void }) => {
   const [loading, setLoading] = useState(false);
+  const [style, onChangeStyle] = useInput("");
+  const [number, onChangeNumber] = useInput("");
+  const [gender, onChangeGender] = useInput("male");
 
   const session: any = useSession();
   const token = session?.data.token;
@@ -15,11 +21,10 @@ const EventForm = ({ onClose }: { onClose: (data: any) => void }) => {
     event.preventDefault();
     setLoading(true);
 
-    const form: any = event.target as HTMLFormElement;
-    const data: any = {
-      style: form.style.value,
-      number: form.number.value,
-      gender: form.gender.value,
+    const data = {
+      style,
+      number,
+      gender,
     };
 
     try {
@@ -40,19 +45,28 @@ const EventForm = ({ onClose }: { onClose: (data: any) => void }) => {
   };
 
   return (
-    <form method="POST" className="mt-8 w-96" onSubmit={handleSubmit}>
-      <Input label="Style" name="style" type="text" required placeholder="Bebas" />
-      <Input label="Number" name="number" type="text" required placeholder="50m" />
+    <form method="POST" className="mt-8 w-96 flex flex-col gap-5" onSubmit={handleSubmit}>
+      <div>
+        <label htmlFor="style" className="block text-sm font-medium text-gray-700">
+          Style
+        </label>
+        <StyleSelect value={style} onChange={onChangeStyle} />
+        <hr className="border-gray-400 shadow-sm" />
+      </div>
+      <div>
+        <label htmlFor="number" className="block text-sm font-medium text-gray-700">
+          Number
+        </label>
+        <NumberSelect style={style} value={number} onChange={onChangeNumber} />
+        <hr className="border-gray-400 shadow-sm" />
+      </div>
       <div>
         <label htmlFor="gender" className="block text-sm font-medium text-gray-700">
           Gender
         </label>
-        <select id="gender" name="gender" className="mt-1 block w-full p-2 border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-        </select>
+        <GenderSelect value={gender} onChange={onChangeGender} />
+        <hr className="border-gray-400 shadow-sm" />
       </div>
-      <hr className="border-gray-400 shadow-sm" />
       <button type="submit" className="btn-submit mt-10" disabled={loading}>
         Add
       </button>
@@ -60,5 +74,4 @@ const EventForm = ({ onClose }: { onClose: (data: any) => void }) => {
     </form>
   );
 };
-
 export default EventForm;

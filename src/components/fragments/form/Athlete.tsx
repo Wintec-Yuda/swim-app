@@ -1,13 +1,19 @@
 import { groupAthlete } from "@/utils";
-import Input from "../ui/Input";
+import Input from "../../ui/Input";
 import { useSession } from "next-auth/react";
 import userInstance from "@/instances/user";
 import { errorAlert, successAlert } from "@/utils/sweetalert";
 import { useState } from "react";
-import Loading from "./Loading";
+import Loading from "../Loading";
+import useInput from "@/hooks/useInput";
+import GenderSelect from "../../ui/GenderSelect";
 
 const AthleteForm = ({ onClose }: { onClose: (data: any) => void }) => {
   const [loading, setLoading] = useState(false);
+  const [fullname, onFullnameChange] = useInput("");
+  const [placeOfBirth, onPlaceOfBirthChange] = useInput("");
+  const [dob, onDobChange] = useInput("");
+  const [gender, onGenderChange] = useInput("");
 
   const session: any = useSession();
   const token = session?.data.token;
@@ -16,12 +22,11 @@ const AthleteForm = ({ onClose }: { onClose: (data: any) => void }) => {
     event.preventDefault();
     setLoading(true);
 
-    const form: any = event.target as HTMLFormElement;
     const data: any = {
-      fullname: form.fullname.value,
-      placeOfBirth: form.placeOfBirth.value,
-      dob: form.dob.value,
-      gender: form.gender.value,
+      fullname: fullname,
+      placeOfBirth: placeOfBirth,
+      dob: dob,
+      gender: gender,
     };
 
     data.group = groupAthlete(data.dob);
@@ -45,18 +50,10 @@ const AthleteForm = ({ onClose }: { onClose: (data: any) => void }) => {
 
   return (
     <form method="POST" className="mt-8 w-96" onSubmit={handleSubmit}>
-      <Input label="Full name" name="fullname" type="text" required placeholder="Full name" />
-      <Input label="Place of birth" name="placeOfBirth" type="text" required placeholder="Kediri" />
-      <Input label="Date of birth" name="dob" type="date" required />
-      <div>
-        <label htmlFor="gender" className="block text-sm font-medium text-gray-700">
-          Gender
-        </label>
-        <select id="gender" name="gender" className="mt-1 block w-full p-2 border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-        </select>
-      </div>
+      <Input label="Full name" name="fullname" type="text" required placeholder="Full name" value={fullname} onChange={onFullnameChange} />
+      <Input label="Place of birth" name="placeOfBirth" type="text" required placeholder="Kediri" value={placeOfBirth} onChange={onPlaceOfBirthChange} />
+      <Input label="Date of birth" name="dob" type="date" required value={dob} onChange={onDobChange} />
+      <GenderSelect value={gender} onChange={onGenderChange} />
       <hr className="border-gray-400 shadow-sm" />
       <button type="submit" className="btn-submit mt-10" disabled={loading}>
         Add

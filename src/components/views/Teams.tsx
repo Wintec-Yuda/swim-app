@@ -1,8 +1,8 @@
 import { useState } from "react";
 import Modal from "../templates/Modal";
-import TeamTable from "../fragments/TeamTable";
+import TeamTable from "../fragments/table/Team";
 import { errorAlert } from "@/utils/sweetalert";
-import AthleteTable from "../fragments/AthleteTable";
+import AthleteTable from "../fragments/table/Athlete";
 
 const TeamsView = ({ teams }: any) => {
   const [selectedAthletes, setSelectedAthletes] = useState<any[]>([]);

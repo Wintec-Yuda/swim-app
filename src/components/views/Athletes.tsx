@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import AthleteTable from "../fragments/AthleteTable";
+import AthleteTable from "../fragments/table/Athlete";
 import Modal from "../templates/Modal";
-import AthleteForm from "../fragments/AthleteForm";
+import AthleteForm from "../fragments/form/Athlete";
 
 const AthletesView = ({ user = [] }: any) => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);

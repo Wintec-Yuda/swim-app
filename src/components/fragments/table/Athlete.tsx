@@ -4,7 +4,7 @@ import { confirmAlert, errorAlert, successAlert } from "@/utils/sweetalert";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { FaRegTrashCan } from "react-icons/fa6";
-import Loading from "./Loading";
+import Loading from "../Loading";
 
 interface Athlete {
   fullname: string;
@@ -28,7 +28,7 @@ const AthleteTable = ({ athletes, setAthletes }: Props) => {
 
   const handleDelete = async (index: any) => {
     const confirmed = await confirmAlert("Yes, delete it!");
-    
+
     if (confirmed) {
       setLoading(true);
       try {

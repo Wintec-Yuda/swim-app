@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Modal from "../templates/Modal";
-import EventForm from "../fragments/EventForm";
-import EventTable from "../fragments/EventTable";
+import EventForm from "../fragments/form/Event";
+import EventTable from "../fragments/table/Event";
 
 const EventsView = ({ data }: any) => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);

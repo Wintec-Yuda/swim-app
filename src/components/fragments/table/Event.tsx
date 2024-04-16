@@ -2,7 +2,7 @@ import { confirmAlert, errorAlert, successAlert } from "@/utils/sweetalert";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { FaRegTrashCan } from "react-icons/fa6";
-import Loading from "./Loading";
+import Loading from "../Loading";
 import eventInstance from "@/instances/event";
 
 const EventTable = ({ events, setEvents }: any) => {
@@ -71,6 +71,7 @@ const EventTable = ({ events, setEvents }: any) => {
           )}
         </tbody>
       </table>
+      {loading && <Loading />}
     </div>
   );
 };
