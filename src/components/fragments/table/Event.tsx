@@ -2,12 +2,17 @@ import { confirmAlert, errorAlert, successAlert } from "@/utils/sweetalert";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { FaRegTrashCan } from "react-icons/fa6";
+import { FaUsers } from "react-icons/fa6";
 import Loading from "../Loading";
 import eventInstance from "@/instances/event";
 import userInstance from "@/instances/user";
+import Modal from "@/components/templates/Modal";
+import AthleteTable from "./Athlete";
 
 const EventTable = ({ events, setEvents, user, setAthletes, indexUser, onClose }: any) => {
   const [loading, setLoading] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [athletesEvent, setAthletesEvent] = useState<any[]>([]);
 
   const session: any = useSession();
   const token = session?.data?.token;
@@ -65,6 +70,15 @@ const EventTable = ({ events, setEvents, user, setAthletes, indexUser, onClose }
     }
   };
 
+  const handleAthletes = (athletes: any) => {
+    if (athletes.length === 0) {
+      errorAlert("Athletes not found");
+      return;
+    }
+    setAthletesEvent(athletes);
+    setModalOpen(true);
+  };
+
   return (
     <div className="overflow-x-auto">
       <table className="table-auto w-full bg-white shadow-md rounded-lg">
@@ -75,7 +89,12 @@ const EventTable = ({ events, setEvents, user, setAthletes, indexUser, onClose }
             <th className="th-td">Number</th>
             <th className="th-td">Gender</th>
             {role === "user" && <th className="th-td">Join event</th>}
-            {role === "admin" && <th className="th-td">Action</th>}
+            {role === "admin" && (
+              <>
+                <th className="th-td">Athletes</th>
+                <th className="th-td">Action</th>
+              </>
+            )}
           </tr>
         </thead>
         <tbody className="text-gray-600 text-sm font-light">
@@ -101,11 +120,18 @@ const EventTable = ({ events, setEvents, user, setAthletes, indexUser, onClose }
                   </td>
                 )}
                 {role === "admin" && (
-                  <td className="th-td">
-                    <button className="btn-button bg-red-500 hover:bg-red-700" onClick={() => handleDelete(event.id, index)} disabled={loading}>
-                      <FaRegTrashCan />
-                    </button>
-                  </td>
+                  <>
+                    <td className="th-td">
+                      <button className="hover:border hover:border-blue-500 hover:p-1" onClick={() => handleAthletes(event.athletes)}>
+                        <FaUsers className="cursor-pointer text-blue-500 text-xl sm:text-2xl" />
+                      </button>
+                    </td>
+                    <td className="th-td">
+                      <button className="btn-button bg-red-500 hover:bg-red-700" onClick={() => handleDelete(event.id, index)} disabled={loading}>
+                        <FaRegTrashCan />
+                      </button>
+                    </td>
+                  </>
                 )}
               </tr>
             ))
@@ -113,6 +139,12 @@ const EventTable = ({ events, setEvents, user, setAthletes, indexUser, onClose }
         </tbody>
       </table>
       {loading && <Loading />}
+      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
+        <>
+          <h2 className="text-xl font-bold mb-4">Athletes</h2>
+          <AthleteTable athletes={athletesEvent} setAthletes={setAthletesEvent} />
+        </>
+      </Modal>
     </div>
   );
 };

@@ -22,8 +22,8 @@ export const confirmAlert = async (confirmButtonText: string) => {
     text: "You won't be able to revert this!",
     icon: "warning",
     showCancelButton: true,
-    confirmButtonColor: "#d33",
-    cancelButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonColor: "#3085d6",
     confirmButtonText: confirmButtonText,
     cancelButtonText: "No, cancel!",
   });

@@ -124,7 +124,7 @@ const AthleteTable = ({ athletes, setAthletes }: Props) => {
                         onClick={() =>
                           handleJoinEvent(
                             {
-                              name: athlete.fullname,
+                              fullname: athlete.fullname,
                               placeOfBirth: athlete.placeOfBirth,
                               dob: athlete.dob,
                               gender: athlete.gender,
