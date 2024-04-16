@@ -44,7 +44,7 @@ const TeamTable = ({ teams, handleAthletesClick }: Props) => {
                 <td className="th-td">{team.email}</td>
                 <td className="th-td">
                   <div className="flex justify-center">
-                    <FaUsers className="cursor-pointer text-blue-500 text-xl" onClick={() => handleAthletesClick(team.athletes)} />
+                    <FaUsers className="cursor-pointer text-blue-500 text-xl sm:text-2xl" onClick={() => handleAthletesClick(team.athletes)} />
                   </div>
                 </td>
               </tr>

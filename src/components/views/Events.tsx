@@ -10,7 +10,8 @@ const EventsView = ({ data }: any) => {
   useEffect(() => {
     setEvents(data || []);
   }, []);
-  const handleAddAthleteClick = () => {
+
+  const handleAddEventClick = () => {
     setModalOpen(true);
   };
 
@@ -22,18 +23,22 @@ const EventsView = ({ data }: any) => {
   };
 
   return (
-    <>
-      <button className="btn-button mb-4 ms-4" onClick={handleAddAthleteClick}>
-        Add Event
-      </button>
-      <div>
-        <EventTable events={events} setEvents={setEvents} />
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="py-8">
+        <button className="btn-button mb-4 ms-4" onClick={handleAddEventClick}>
+          Add Event
+        </button>
+        <div>
+          <EventTable events={events} setEvents={setEvents} />
+        </div>
       </div>
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
-        <h2 className="text-xl font-bold mb-2">Add Event</h2>
-        <EventForm onClose={handleCloseModal} />
+        <div className="p-4">
+          <h2 className="text-xl font-bold mb-4">Add Event</h2>
+          <EventForm onClose={handleCloseModal} />
+        </div>
       </Modal>
-    </>
+    </div>
   );
 };
 

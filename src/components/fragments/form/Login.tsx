@@ -39,7 +39,7 @@ const LoginForm = () => {
   };
 
   return (
-    <>
+    <div className="max-w-md mx-auto">
       <form className="mt-8 space-y-6" onSubmit={handleSubmit} method="POST">
         <div className="rounded-md shadow-sm -space-y-px">
           <Input label="Email" name="email" type="email" required placeholder="example@gmail.com" value={email} onChange={onChangeEmail} />
@@ -52,7 +52,7 @@ const LoginForm = () => {
         </div>
       </form>
       {loading && <Loading />}
-    </>
+    </div>
   );
 };
 

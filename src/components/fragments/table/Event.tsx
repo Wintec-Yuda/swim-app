@@ -49,7 +49,7 @@ const EventTable = ({ events, setEvents }: any) => {
         <tbody className="text-gray-600 text-sm font-light">
           {events && events.length === 0 ? (
             <tr>
-              <td className="th-td" colSpan={4}>
+              <td className="th-td" colSpan={5}>
                 No data available
               </td>
             </tr>

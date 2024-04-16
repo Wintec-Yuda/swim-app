@@ -32,15 +32,9 @@ const AthleteForm = ({ onClose }: { onClose: (data: any) => void }) => {
     data.group = groupAthlete(data.dob);
 
     try {
-      await userInstance
-        .addAthlete(data, token)
-        .then((response) => {
-          successAlert(response.data.message);
-          onClose(response.data.data);
-        })
-        .catch((error) => {
-          errorAlert("Internal Server Error");
-        });
+      const response = await userInstance.addAthlete(data, token);
+      successAlert(response.data.message);
+      onClose(response.data.data);
     } catch (error) {
       errorAlert("Internal Server Error");
     } finally {
@@ -49,7 +43,7 @@ const AthleteForm = ({ onClose }: { onClose: (data: any) => void }) => {
   };
 
   return (
-    <form method="POST" className="mt-8 w-96" onSubmit={handleSubmit}>
+    <form method="POST" className="mt-8 mx-auto max-w-md" onSubmit={handleSubmit}>
       <Input label="Full name" name="fullname" type="text" required placeholder="Full name" value={fullname} onChange={onFullnameChange} />
       <Input label="Place of birth" name="placeOfBirth" type="text" required placeholder="Kediri" value={placeOfBirth} onChange={onPlaceOfBirthChange} />
       <Input label="Date of birth" name="dob" type="date" required value={dob} onChange={onDobChange} />

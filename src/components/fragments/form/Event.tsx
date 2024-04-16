@@ -28,15 +28,9 @@ const EventForm = ({ onClose }: { onClose: (data: any) => void }) => {
     };
 
     try {
-      await eventInstance
-        .addEvent(data, token)
-        .then((response) => {
-          successAlert(response.data.message);
-          onClose(response.data.data);
-        })
-        .catch((error) => {
-          errorAlert("Internal Server Error");
-        });
+      const response = await eventInstance.addEvent(data, token);
+      successAlert(response.data.message);
+      onClose(response.data.data);
     } catch (error) {
       errorAlert("Internal Server Error");
     } finally {
@@ -45,33 +39,31 @@ const EventForm = ({ onClose }: { onClose: (data: any) => void }) => {
   };
 
   return (
-    <form method="POST" className="mt-8 w-96 flex flex-col gap-5" onSubmit={handleSubmit}>
-      <div>
+    <form method="POST" className="mt-8 mx-auto max-w-md" onSubmit={handleSubmit}>
+      <div className="mb-4">
         <label htmlFor="style" className="block text-sm font-medium text-gray-700">
           Style
         </label>
         <StyleSelect value={style} onChange={onChangeStyle} />
-        <hr className="border-gray-400 shadow-sm" />
       </div>
-      <div>
+      <div className="mb-4">
         <label htmlFor="number" className="block text-sm font-medium text-gray-700">
           Number
         </label>
         <NumberSelect style={style} value={number} onChange={onChangeNumber} />
-        <hr className="border-gray-400 shadow-sm" />
       </div>
-      <div>
+      <div className="mb-4">
         <label htmlFor="gender" className="block text-sm font-medium text-gray-700">
           Gender
         </label>
         <GenderSelect value={gender} onChange={onChangeGender} />
-        <hr className="border-gray-400 shadow-sm" />
       </div>
-      <button type="submit" className="btn-submit mt-10" disabled={loading}>
+      <button type="submit" className="btn-submit" disabled={loading}>
         Add
       </button>
       {loading && <Loading />}
     </form>
   );
 };
+
 export default EventForm;

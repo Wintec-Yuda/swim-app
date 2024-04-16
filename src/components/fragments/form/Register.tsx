@@ -41,7 +41,7 @@ const RegisterForm = () => {
   };
 
   return (
-    <>
+    <div className="max-w-md mx-auto">
       <form className="mt-8 space-y-6" onSubmit={handleSubmit} method="POST">
         <div className="rounded-md shadow-sm -space-y-px">
           <Input label="Full name" name="fullname" type="text" required placeholder="Full Name" value={fullname} onChange={onChangeFullname} />
@@ -57,7 +57,7 @@ const RegisterForm = () => {
         </div>
       </form>
       {loading && <Loading />}
-    </>
+    </div>
   );
 };
 

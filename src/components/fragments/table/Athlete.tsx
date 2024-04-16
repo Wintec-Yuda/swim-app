@@ -65,7 +65,7 @@ const AthleteTable = ({ athletes, setAthletes }: Props) => {
         <tbody className="bg-white divide-y divide-gray-200">
           {athletes && athletes.length === 0 ? (
             <tr>
-              <td className="th-td" colSpan={4}>
+              <td className="th-td" colSpan={5}>
                 No data available
               </td>
             </tr>

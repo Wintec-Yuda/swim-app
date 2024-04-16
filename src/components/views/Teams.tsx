@@ -18,12 +18,16 @@ const TeamsView = ({ teams }: any) => {
   };
 
   return (
-    <div>
-      <TeamTable teams={teams} handleAthletesClick={handleAthletesClick} />
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="py-8">
+        <TeamTable teams={teams} handleAthletesClick={handleAthletesClick} />
+      </div>
 
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
-        <h2 className="text-xl font-bold mb-2">Athletes</h2>
-        <AthleteTable athletes={selectedAthletes} setAthletes={setSelectedAthletes} />
+        <div className="p-4">
+          <h2 className="text-xl font-bold mb-4">Athletes</h2>
+          <AthleteTable athletes={selectedAthletes} setAthletes={setSelectedAthletes} />
+        </div>
       </Modal>
     </div>
   );

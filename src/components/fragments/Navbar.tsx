@@ -1,56 +1,41 @@
-import { confirmAlert } from "@/utils/sweetalert";
-import { signOut, useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
-import { MdEvent } from "react-icons/md";
-import { TiGroupOutline } from "react-icons/ti";
-import { FaSwimmer } from "react-icons/fa";
+import { confirmAlert } from "@/utils/sweetalert";
 
 const Navbar = () => {
   const session: any = useSession();
   const role = session?.data?.user?.role;
 
   const handleSignOut = async () => {
-    const confirmed = await confirmAlert("Yes, come out now!");
+    const confirmed = await confirmAlert("Are you sure you want to sign out?");
     if (confirmed) signOut();
   };
 
   return (
-    <nav className="bg-teal-500 h-16 flex items-center justify-between">
-      <div className="px-4 flex items-center justify-between gap-10">
-        <h2 className="text-white text-lg font-bold">Swim Race</h2>
-        {role === "admin" && (
-          <>
-            <div className="bg-transparent p-3 hover:bg-teal-700">
-              <Link href="/teams" className="text-slate-100 font-bold hover:underline">
-                <span className="flex items-center gap-2">
-                  <TiGroupOutline size={25} /> Team
-                </span>
+    <nav className="bg-gray-900 text-white">
+      <div className="container mx-auto px-4 py-2 flex items-center justify-between">
+        <div className="flex items-center">
+          <h1 className="text-lg font-bold">Swim Race</h1>
+        </div>
+        <div className="md:flex md-flex-col md:items-center md:space-x-4">
+          {role === "admin" && (
+            <>
+              <Link href="/teams" className="py-1 px-3 rounded-md bg-blue-700 hover:bg-blue-900 hover:text-gray-100">
+                Teams
               </Link>
-            </div>
-            <div className="bg-transparent p-3 hover:bg-teal-700">
-              <Link href="/events" className="text-slate-100 font-bold hover:underline">
-                <span className="flex items-center gap-2">
-                  <MdEvent size={25} /> Event
-                </span>
+              <Link href={"/events"} className="py-1 px-3 rounded-md bg-blue-700 hover:bg-blue-900 hover:text-gray-300">
+                Events
               </Link>
-            </div>
-          </>
-        )}
-        {role === "user" && (
-          <>
-            <div className="bg-transparent p-3 hover:bg-teal-700">
-              <Link href="/teams" className="text-slate-100 font-bold hover:underline">
-                <span className="flex items-center gap-2">
-                  <FaSwimmer size={25} /> Athletes
-                </span>
-              </Link>
-            </div>
-          </>
-        )}
-      </div>
-      <div className="px-4 hidden md:block">
-        <div className="relative">
-          <button className="btn-button bg-rose-600 hover:bg-rose-900" onClick={() => handleSignOut()}>
+            </>
+          )}
+          {role === "user" && (
+            <Link href="/athletes" className="py-1 px-3 rounded-md bg-blue-700 hover:bg-blue-900 hover:text-gray-100">
+              Athletes
+            </Link>
+          )}
+        </div>
+        <div>
+          <button className="btn-button bg-red-600 hover:bg-red-800" onClick={handleSignOut}>
             Logout
           </button>
         </div>

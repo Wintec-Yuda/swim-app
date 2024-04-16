@@ -10,6 +10,7 @@ const AthletesView = ({ user = [] }: any) => {
   useEffect(() => {
     setAthletes(user.athletes || []);
   }, []);
+
   const handleAddAthleteClick = () => {
     setModalOpen(true);
   };
@@ -22,29 +23,29 @@ const AthletesView = ({ user = [] }: any) => {
   };
 
   return (
-    <>
-      <div className="flex justify-between px-10">
-        <div className="flex gap-10">
-          <h1 className="text-3xl font-bold mb-4">Team {user.team}</h1>
-          <div>
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="py-8">
+        <div className="flex justify-between items-center mb-8">
+          <div className="flex gap-4 items-center">
+            <h1 className="text-3xl font-bold">Team {user.team}</h1>
             <button className="btn-button" onClick={handleAddAthleteClick}>
               Add Athlete
             </button>
           </div>
+          <div className="text-sm">
+            <p>Coach: {user.fullname}</p>
+            <p>Phone: {user.phone}</p>
+          </div>
         </div>
-        <div>
-          <p>Coach: {user.fullname}</p>
-          <p>Phone: {user.phone}</p>
-        </div>
-      </div>
-      <div>
         <AthleteTable athletes={athletes} setAthletes={setAthletes} />
       </div>
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
-        <h2 className="text-xl font-bold mb-2">Add Athlete</h2>
-        <AthleteForm onClose={handleCloseModal} />
+        <div className="p-4">
+          <h2 className="text-xl font-bold mb-4">Add Athlete</h2>
+          <AthleteForm onClose={handleCloseModal} />
+        </div>
       </Modal>
-    </>
+    </div>
   );
 };
 
