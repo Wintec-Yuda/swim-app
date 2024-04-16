@@ -36,10 +36,10 @@ const AthletesView = ({ user = [] }: any) => {
         <AthleteTable athletes={athletes} setAthletes={setAthletes} />
       </div>
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
-        <div className="p-4">
+        <>
           <h2 className="text-xl font-bold mb-4">Add Athlete</h2>
           <AthleteForm onClose={handleCloseModal} />
-        </div>
+        </>
       </Modal>
     </div>
   );

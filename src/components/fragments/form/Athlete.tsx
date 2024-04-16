@@ -13,7 +13,7 @@ const AthleteForm = ({ onClose }: { onClose: (data: any) => void }) => {
   const [fullname, onFullnameChange] = useInput("");
   const [placeOfBirth, onPlaceOfBirthChange] = useInput("");
   const [dob, onDobChange] = useInput("");
-  const [gender, onGenderChange] = useInput("");
+  const [gender, onGenderChange] = useInput("male");
 
   const session: any = useSession();
   const token = session?.data.token;

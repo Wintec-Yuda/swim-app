@@ -6,8 +6,8 @@ const userInstance = {
       headers: { Authorization: `Bearer ${token}` },
     }),
 
-  addAthleteEvent: (eventId: any, data: any, token: string) =>
-    instance.post(`/api/user/athlete/event/${eventId}`, data, {
+  addAthleteEvent: (index: any, eventId: any, data: any, token: string) =>
+    instance.post(`/api/user/athlete/event/${index}/${eventId}`, data, {
       headers: { Authorization: `Bearer ${token}` },
     }),
 

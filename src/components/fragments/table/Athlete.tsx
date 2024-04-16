@@ -16,6 +16,7 @@ interface Athlete {
   dob: string;
   gender: string;
   group: string;
+  event: object;
 }
 
 interface Props {
@@ -26,9 +27,12 @@ interface Props {
 const AthleteTable = ({ athletes, setAthletes }: Props) => {
   const [loading, setLoading] = useState(false);
   const [events, setEvents] = useState<any[]>([]);
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [event, setEvent] = useState<any>(null);
+  const [modalJoinOpen, setModalJoinOpen] = useState<boolean>(false);
+  const [modalCekOpen, setModalCekOpen] = useState<boolean>(false);
   const [eventsByGender, setEventsByGender] = useState<any[]>([]);
   const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [selectedIndex, setSelectedIndex] = useState<any>(null);
 
   const { data, error, isLoading } = useSWR("/api/events", fetcher);
 
@@ -63,11 +67,17 @@ const AthleteTable = ({ athletes, setAthletes }: Props) => {
     }
   };
 
-  const handleJoinEvent = (user: any) => {
+  const handleJoinEvent = (user: any, index: any) => {
     const filteredEvents = events.filter((event) => event.gender === user.gender);
     setEventsByGender(filteredEvents);
     setSelectedUser(user);
-    setModalOpen(true);
+    setSelectedIndex(index);
+    setModalJoinOpen(true);
+  };
+
+  const handleCekEvent = (event: any) => {
+    setEvent(event);
+    setModalCekOpen(true);
   };
 
   return (
@@ -100,24 +110,34 @@ const AthleteTable = ({ athletes, setAthletes }: Props) => {
                 <td className="th-td">{formatDob(athlete.placeOfBirth, athlete.dob)}</td>
                 <td className="th-td">{athlete.gender}</td>
                 <td className="th-td">{athlete.group}</td>
-                {role === "user" && (
-                  <td className="th-td">
-                    <button
-                      className="btn-button bg-green-700 hover:bg-green-900"
-                      onClick={() =>
-                        handleJoinEvent({
-                          name: athlete.fullname,
-                          placeOfBirth: athlete.placeOfBirth,
-                          dob: athlete.dob,
-                          gender: athlete.gender,
-                          group: athlete.group,
-                        })
-                      }
-                    >
-                      Daftar event
-                    </button>
-                  </td>
-                )}
+                {role === "user" &&
+                  (athlete.event ? (
+                    <td className="th-td">
+                      <button className="btn-button bg-blue-700 hover:bg-blue-900" onClick={() => handleCekEvent(athlete.event)}>
+                        Cek event
+                      </button>
+                    </td>
+                  ) : (
+                    <td className="th-td">
+                      <button
+                        className="btn-button bg-green-700 hover:bg-green-900"
+                        onClick={() =>
+                          handleJoinEvent(
+                            {
+                              name: athlete.fullname,
+                              placeOfBirth: athlete.placeOfBirth,
+                              dob: athlete.dob,
+                              gender: athlete.gender,
+                              group: athlete.group,
+                            },
+                            index
+                          )
+                        }
+                      >
+                        Daftar event
+                      </button>
+                    </td>
+                  ))}
                 {role === "user" && (
                   <td className="th-td">
                     <button className="btn-button bg-red-500 hover:bg-red-700" onClick={() => handleDelete(index)} disabled={loading}>
@@ -131,11 +151,34 @@ const AthleteTable = ({ athletes, setAthletes }: Props) => {
         </tbody>
       </table>
       {loading && <Loading />}
-      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
-        <div className="p-4">
+      <Modal isOpen={modalJoinOpen} onClose={() => setModalJoinOpen(false)}>
+        <>
           <h2 className="text-xl font-bold mb-4">Add athlete to event</h2>
-          <EventTable events={eventsByGender} setEvents={setEventsByGender} user={selectedUser} />
-        </div>
+          <EventTable events={eventsByGender} setEvents={setEventsByGender} user={selectedUser} setAthletes={setAthletes} indexUser={selectedIndex} onClose={() => setModalJoinOpen(false)} />
+        </>
+      </Modal>
+      <Modal isOpen={modalCekOpen} onClose={() => setModalCekOpen(false)}>
+        {event && (
+          <>
+            <h2 className="text-2xl font-bold mb-4">Event Details</h2>
+            <div className="bg-white shadow-lg rounded-lg bg-gray-200">
+              <div className="grid grid-cols-2 gap-4 text-center">
+                <div className="shadow-md">
+                  <p className="text-gray-600 font-semibold p-4 underline">Style</p>
+                  <p className="text-lg p-4 -mt-5">{event.style}</p>
+                </div>
+                <div className="shadow-md">
+                  <p className="text-gray-600 font-semibold p-4 underline">Number</p>
+                  <p className="text-lg p-4 -mt-5">{event.number}</p>
+                </div>
+                <div className="shadow-md">
+                  <p className="text-gray-600 font-semibold p-4 underline">Gender</p>
+                  <p className="text-lg p-4 -mt-5">{event.gender}</p>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </Modal>
     </div>
   );

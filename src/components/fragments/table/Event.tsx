@@ -6,7 +6,7 @@ import Loading from "../Loading";
 import eventInstance from "@/instances/event";
 import userInstance from "@/instances/user";
 
-const EventTable = ({ events, setEvents, user }: any) => {
+const EventTable = ({ events, setEvents, user, setAthletes, indexUser, onClose }: any) => {
   const [loading, setLoading] = useState(false);
 
   const session: any = useSession();
@@ -42,9 +42,17 @@ const EventTable = ({ events, setEvents, user }: any) => {
     if (confirmed) {
       setLoading(true);
       try {
-        const response = await userInstance.addAthleteEvent(id, user, token);
+        const response = await userInstance.addAthleteEvent(indexUser, id, user, token);
         if (response.data.success) {
-          successAlert(`Add to Event successfully`);
+          const eventData = response.data.data;
+
+          setAthletes((prevAthletes: any) => {
+            const updatedAthletes = [...prevAthletes];
+            const athleteToUpdate = updatedAthletes[indexUser];
+            athleteToUpdate.event = eventData;
+            return updatedAthletes;
+          });
+          successAlert(response.data.message);
         } else {
           errorAlert("Internal Server Error");
         }
@@ -52,6 +60,7 @@ const EventTable = ({ events, setEvents, user }: any) => {
         errorAlert("Internal Server Error");
       } finally {
         setLoading(false);
+        onClose();
       }
     }
   };

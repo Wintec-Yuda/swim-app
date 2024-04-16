@@ -24,10 +24,10 @@ const TeamsView = ({ users }: any) => {
       </div>
 
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
-        <div className="p-4">
+        <>
           <h2 className="text-xl font-bold mb-4">Athletes</h2>
           <AthleteTable athletes={selectedAthletes} setAthletes={setSelectedAthletes} />
-        </div>
+        </>
       </Modal>
     </div>
   );

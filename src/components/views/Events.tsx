@@ -29,14 +29,14 @@ const EventsView = ({ data }: any) => {
           Add Event
         </button>
         <div>
-          <EventTable events={events} setEvents={setEvents} selectedUser={null} />
+          <EventTable events={events} setEvents={setEvents} />
         </div>
       </div>
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
-        <div className="p-4">
+        <>
           <h2 className="text-xl font-bold mb-4">Add Event</h2>
           <EventForm onClose={handleCloseModal} />
-        </div>
+        </>
       </Modal>
     </div>
   );

@@ -1,21 +1,28 @@
 import { NextResponse, NextRequest } from "next/server";
 import jwt from "jsonwebtoken";
-import { addAthlete } from "@/lib/firebase/service";
+import { addAthlete, getDataById, updateAthleteWithEvent } from "@/lib/firebase/service";
 
 export async function POST(request: NextRequest) {
   try {
-    const data = await request.json();
+    const dataUser = await request.json();
     const token: any = request.headers.get("authorization")?.split(" ")[1];
     const decoded: any = jwt.verify(token, process.env.NEXTAUTH_SECRET || "");
-    const id: any = request.url.split("/").pop();
+    const partnames = request.url.split("/");
+    const eventId = partnames[partnames.length - 1];
+    const index: any = partnames[partnames.length - 2];
 
     if (decoded && decoded.role === "user") {
-      const status = await addAthlete("events", id, data);
-      if (status) {
+      const dataEvent: any = await getDataById("events", eventId);
+      delete dataEvent.athletes;
+
+      const statusAdd = await addAthlete("events", eventId, dataUser);
+      const statusUpdate = await updateAthleteWithEvent(decoded.id, index, dataEvent);
+      if (statusAdd && statusUpdate) {
         return NextResponse.json(
           {
             success: true,
-            message: `Add ${data.fullname} to event successfully`,
+            message: `Add athlete to event successfully`,
+            data: dataEvent,
           },
           { status: 200 }
         );
@@ -23,7 +30,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(
           {
             success: false,
-            message: "Add athlete to event failed",
+            message: `Add athlete to event failed`,
           },
           { status: 500 }
         );
