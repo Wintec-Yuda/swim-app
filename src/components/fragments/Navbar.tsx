@@ -4,17 +4,17 @@ import { confirmAlert } from "@/utils/sweetalert";
 
 const Navbar = () => {
   const session: any = useSession();
-  const role = session?.data?.user?.role;
+  const role: string = session?.data?.user?.role;
 
   const handleSignOut = async () => {
-    const confirmed = await confirmAlert("Are you sure you want to sign out?");
+    const confirmed: boolean = await confirmAlert("Are you sure you want to sign out?");
     if (confirmed) signOut();
   };
 
   return (
     <nav className="bg-gray-900 text-white">
       <div className="container mx-auto px-4 py-2 flex items-center justify-between">
-        <div className="flex items-center">
+        <div className="hidden sm:flex items-center">
           <h1 className="text-lg font-bold">Swim Race</h1>
         </div>
         <div className="md:flex md-flex-col md:items-center md:space-x-4">

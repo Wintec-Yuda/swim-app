@@ -122,7 +122,8 @@ const EventTable = ({ events, setEvents, user, setAthletes, indexUser, onClose }
                 {role === "admin" && (
                   <>
                     <td className="th-td">
-                      <button className="hover:border hover:border-blue-500 hover:p-1" onClick={() => handleAthletes(event.athletes)}>
+                      <button onClick={() => handleAthletes(event.athletes)} className="relative">
+                        <span className="absolute -top-2 -right-3 bg-gray-800 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">{event.athletes.length}</span>
                         <FaUsers className="cursor-pointer text-blue-500 text-xl sm:text-2xl" />
                       </button>
                     </td>

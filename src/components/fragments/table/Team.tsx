@@ -1,22 +1,35 @@
+import Modal from "@/components/templates/Modal";
+import { errorAlert } from "@/utils/sweetalert";
+import { useState } from "react";
 import { FaUsers } from "react-icons/fa6";
+import AthleteTable from "./Athlete";
 
 interface User {
   fullname: string;
   email: string;
   role: string;
-  coach: {
-    name: string;
-    phone: string;
-  };
+  phone: string;
+  team: string;
   athletes: any[];
 }
 
 interface Props {
   users: User[];
-  handleAthletes: (athletes: any[]) => void;
 }
 
-const TeamTable = ({ users, handleAthletes }: Props) => {
+const TeamTable = ({ users }: Props) => {
+  const [selectedAthletes, setSelectedAthletes] = useState<any[]>([]);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+
+  const handleAthletes = (athletes: any) => {
+    if (!athletes) {
+      errorAlert("Athletes not found");
+      return;
+    }
+    setSelectedAthletes(athletes);
+    setModalOpen(true);
+  };
+
   return (
     <div className="overflow-x-auto">
       <table className="table-auto w-full bg-white shadow-md rounded-lg">
@@ -43,7 +56,8 @@ const TeamTable = ({ users, handleAthletes }: Props) => {
                 <td className="th-td">{user.fullname}</td>
                 <td className="th-td">{user.email}</td>
                 <td className="th-td">
-                  <button className="hover:border hover:border-blue-500 hover:p-1" onClick={() => handleAthletes(user.athletes)}>
+                  <button onClick={() => handleAthletes(user.athletes)} className="relative">
+                    <span className="absolute -top-2 -right-3 bg-gray-800 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">{user.athletes.length}</span>
                     <FaUsers className="cursor-pointer text-blue-500 text-xl sm:text-2xl" />
                   </button>
                 </td>
@@ -52,6 +66,12 @@ const TeamTable = ({ users, handleAthletes }: Props) => {
           )}
         </tbody>
       </table>
+      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
+        <>
+          <h2 className="text-xl font-bold mb-4">Athletes</h2>
+          <AthleteTable athletes={selectedAthletes} setAthletes={setSelectedAthletes} />
+        </>
+      </Modal>
     </div>
   );
 };

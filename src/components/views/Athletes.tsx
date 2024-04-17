@@ -28,7 +28,7 @@ const AthletesView = ({ user = [] }: any) => {
               Add Athlete
             </button>
           </div>
-          <div className="text-sm">
+          <div className="text-sm hidden sm:block">
             <p>Coach: {user.fullname}</p>
             <p>Phone: {user.phone}</p>
           </div>
