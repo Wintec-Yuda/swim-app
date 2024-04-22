@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Loader2 } from "lucide-react";
 import { signIn } from "next-auth/react";
-import { Input } from "@/components/ui/input";
+import { Input } from "../../ui/input";
 
 const formSchema = z.object({
   email: z.string({ required_error: "Email is required" }).email(),
