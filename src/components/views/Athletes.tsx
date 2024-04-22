@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import AthleteTable from "../fragments/table/Athlete";
 import Modal from "../templates/Modal";
 import AthleteForm from "../fragments/form/Athlete";
+import { Button } from "../ui/button";
 
 const AthletesView = ({ user = [] }: any) => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -19,29 +20,27 @@ const AthletesView = ({ user = [] }: any) => {
   };
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="py-8">
-        <div className="flex justify-between items-center mb-8">
-          <div className="flex gap-4 items-center">
-            <h1 className="text-3xl font-bold">Team {user.team}</h1>
-            <button className="btn-button" onClick={() => setModalOpen(true)}>
-              Add Athlete
-            </button>
-          </div>
-          <div className="text-sm hidden sm:block">
-            <p>Coach: {user.fullname}</p>
-            <p>Phone: {user.phone}</p>
-          </div>
+    <>
+      <section className="flex justify-between p-4">
+        <div className="flex gap-2">
+          <h1 className="text-3xl font-bold hidden md:block">Team {user.team}</h1>
+          <Button className="bg-blue-700 hover:bg-blue-900" onClick={() => setModalOpen(true)}>Add Athlete</Button>
         </div>
+        <div>
+          <p>Coach: {user.fullname}</p>
+          <p>Phone: {user.phone}</p>
+        </div>
+      </section>
+      <section className="p-4">
         <AthleteTable athletes={athletes} setAthletes={setAthletes} />
-      </div>
+      </section>
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
         <>
           <h2 className="text-xl font-bold mb-4">Add Athlete</h2>
           <AthleteForm onClose={handleCloseModal} />
         </>
       </Modal>
-    </div>
+    </>
   );
 };
 

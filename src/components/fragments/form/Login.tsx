@@ -1,28 +1,41 @@
 "use client";
 
 import { useState } from "react";
-import useInput from "@/hooks/useInput";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { errorAlert, successAlert } from "@/utils/sweetalert";
-import Input from "@/components/ui/Input";
-import Loading from "../Loading";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Loader2 } from "lucide-react";
+import { signIn } from "next-auth/react";
+import { Input } from "@/components/ui/input";
+
+const formSchema = z.object({
+  email: z.string({ required_error: "Email is required" }).email(),
+  password: z.string({ required_error: "Password is required" }),
+});
 
 const LoginForm = () => {
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [email, onChangeEmail] = useInput("");
-  const [password, onChangePassword] = useInput("");
+  const router = useRouter();
 
-  const handleSubmit = async (event: any) => {
-    event.preventDefault();
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     setLoading(true);
-
     try {
       const res = await signIn("credentials", {
         redirect: false,
-        email: email,
-        password: password,
+        email: data.email,
+        password: data.password,
       });
 
       if (res?.ok) {
@@ -39,20 +52,50 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto">
-      <form className="mt-8 space-y-6" onSubmit={handleSubmit} method="POST">
-        <div className="rounded-md shadow-sm -space-y-px">
-          <Input label="Email" name="email" type="email" required placeholder="example@gmail.com" value={email} onChange={onChangeEmail} />
-          <Input label="Password" name="password" type="password" required placeholder="********" value={password} onChange={onChangePassword} />
-        </div>
-        <div>
-          <button type="submit" className="btn-submit" disabled={loading}>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="max-w-md w-full flex flex-col gap-4">
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => {
+            return (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input placeholder="example@gmail.com" type="email" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
+        />
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => {
+            return (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input placeholder="Password" type="password" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
+        />
+        {loading ? (
+          <Button disabled className="mt-3">
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Please wait
+          </Button>
+        ) : (
+          <Button type="submit" className="mt-3">
             Login
-          </button>
-        </div>
+          </Button>
+        )}
       </form>
-      {loading && <Loading />}
-    </div>
+    </Form>
   );
 };
 

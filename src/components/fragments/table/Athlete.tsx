@@ -4,16 +4,19 @@ import { confirmAlert, errorAlert, successAlert } from "@/utils/sweetalert";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { FaRegTrashCan } from "react-icons/fa6";
-import Loading from "../Loading";
 import useSWR from "swr";
 import { fetcher } from "@/utils/fetcher";
 import Modal from "@/components/templates/Modal";
 import EventTable from "./Event";
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+import EventDetail from "../detail/Event";
 
 interface Athlete {
   fullname: string;
   placeOfBirth: string;
-  dob: string;
+  dateOfBirth: string;
   gender: string;
   group: string;
   event: object;
@@ -81,46 +84,45 @@ const AthleteTable = ({ athletes, setAthletes }: Props) => {
   };
 
   return (
-    <div className="overflow-x-auto">
-      <table className="table-auto w-full bg-white shadow-md rounded-lg">
-        <thead className="bg-gray-200 text-gray-700 uppercase text-sm leading-normal">
-          <tr>
-            <th className="th-td">No</th>
-            <th className="th-td">Name</th>
-            <th className="th-td">Place, Date of Birth</th>
-            <th className="th-td">Gender</th>
-            <th className="th-td">Group</th>
-            {role === "user" && <th className="th-td">Join event</th>}
-            {role === "user" && <th className="th-td">Action</th>}
-          </tr>
-        </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
+    <>
+      <Table>
+        <TableCaption>Table Athletes</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead>No</TableHead>
+            <TableHead>Name</TableHead>
+            <TableHead>Place, Date of Birth</TableHead>
+            <TableHead>Gender</TableHead>
+            <TableHead>Group</TableHead>
+            {role === "user" && <TableHead>Join Event</TableHead>}
+            {role === "user" && <TableHead>Action</TableHead>}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {athletes && athletes.length === 0 ? (
-            <tr>
-              <td className="th-td" colSpan={5}>
-                No data available
-              </td>
-            </tr>
+            <TableRow>
+              <TableCell colSpan={5}>No data available</TableCell>
+            </TableRow>
           ) : (
             athletes &&
-            athletes.map((athlete, index) => (
-              <tr key={index} className="hover:bg-sky-100">
-                <td className="th-td">{index + 1}</td>
-                <td className="th-td">{athlete.fullname}</td>
-                <td className="th-td">{formatDob(athlete.placeOfBirth, athlete.dob)}</td>
-                <td className="th-td">{athlete.gender}</td>
-                <td className="th-td">{athlete.group}</td>
+            athletes.map((athlete: any, index: number) => (
+              <TableRow key={index}>
+                <TableCell>{index + 1}</TableCell>
+                <TableCell>{athlete.fullname}</TableCell>
+                <TableCell>{formatDob(athlete.placeOfBirth, athlete.dateOfBirth)}</TableCell>
+                <TableCell>{athlete.gender}</TableCell>
+                <TableCell>{athlete.group}</TableCell>
                 {role === "user" &&
                   (athlete.event ? (
-                    <td className="th-td">
-                      <button className="btn-button bg-blue-700 hover:bg-blue-900" onClick={() => handleCekEvent(athlete.event)}>
-                        Cek event
-                      </button>
-                    </td>
+                    <TableCell>
+                      <Button variant="outline" onClick={() => handleCekEvent(athlete.event)}>
+                        Cek Event
+                      </Button>
+                    </TableCell>
                   ) : (
-                    <td className="th-td">
-                      <button
-                        className="btn-button bg-green-700 hover:bg-green-900"
+                    <TableCell>
+                      <Button
+                        variant="outline"
                         onClick={() =>
                           handleJoinEvent(
                             {
@@ -134,23 +136,29 @@ const AthleteTable = ({ athletes, setAthletes }: Props) => {
                           )
                         }
                       >
-                        Daftar event
-                      </button>
-                    </td>
+                        Daftar Event
+                      </Button>
+                    </TableCell>
                   ))}
                 {role === "user" && (
-                  <td className="th-td">
-                    <button className="btn-button bg-red-500 hover:bg-red-700" onClick={() => handleDelete(index)} disabled={loading}>
-                      <FaRegTrashCan />
-                    </button>
-                  </td>
+                  <TableCell>
+                    {loading ? (
+                      <Button variant="outline">
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Please wait
+                      </Button>
+                    ) : (
+                      <Button variant="outline" disabled={loading} onClick={() => handleDelete(index)}>
+                        <FaRegTrashCan className="text-red-700" />
+                      </Button>
+                    )}
+                  </TableCell>
                 )}
-              </tr>
+              </TableRow>
             ))
           )}
-        </tbody>
-      </table>
-      {loading && <Loading />}
+        </TableBody>
+      </Table>
       <Modal isOpen={modalJoinOpen} onClose={() => setModalJoinOpen(false)}>
         <>
           <h2 className="text-xl font-bold mb-4">Add athlete to event</h2>
@@ -158,29 +166,9 @@ const AthleteTable = ({ athletes, setAthletes }: Props) => {
         </>
       </Modal>
       <Modal isOpen={modalCekOpen} onClose={() => setModalCekOpen(false)}>
-        {event && (
-          <>
-            <h2 className="text-2xl font-bold mb-4">Event Details</h2>
-            <div className="bg-white shadow-lg rounded-lg bg-gray-200">
-              <div className="grid grid-cols-2 gap-4 text-center">
-                <div className="shadow-md">
-                  <p className="text-gray-600 font-semibold p-4 underline">Style</p>
-                  <p className="text-lg p-4 -mt-5">{event.style}</p>
-                </div>
-                <div className="shadow-md">
-                  <p className="text-gray-600 font-semibold p-4 underline">Number</p>
-                  <p className="text-lg p-4 -mt-5">{event.number}</p>
-                </div>
-                <div className="shadow-md">
-                  <p className="text-gray-600 font-semibold p-4 underline">Gender</p>
-                  <p className="text-lg p-4 -mt-5">{event.gender}</p>
-                </div>
-              </div>
-            </div>
-          </>
-        )}
+        {event && <EventDetail event={event} />}
       </Modal>
-    </div>
+    </>
   );
 };
 

@@ -1,35 +1,45 @@
 import { groupAthlete } from "@/utils";
-import Input from "../../ui/Input";
 import { useSession } from "next-auth/react";
 import userInstance from "@/instances/user";
 import { errorAlert, successAlert } from "@/utils/sweetalert";
 import { useState } from "react";
-import Loading from "../Loading";
-import useInput from "@/hooks/useInput";
-import GenderSelect from "../../ui/GenderSelect";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Loader2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+
+const formSchema = z.object({
+  fullname: z.string({ required_error: "Fullname is required" }),
+  placeOfBirth: z.string({ required_error: "Place of Birth is required" }),
+  dateOfBirth: z.string({ required_error: "Date of Birth is required" }),
+  gender: z.enum(["male", "female"]),
+  group: z.string({ required_error: "Group is required" }),
+});
 
 const AthleteForm = ({ onClose }: { onClose: (data: any) => void }) => {
   const [loading, setLoading] = useState(false);
-  const [fullname, onFullnameChange] = useInput("");
-  const [placeOfBirth, onPlaceOfBirthChange] = useInput("");
-  const [dob, onDobChange] = useInput("");
-  const [gender, onGenderChange] = useInput("male");
 
   const session: any = useSession();
   const token = session?.data.token;
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      fullname: "",
+      placeOfBirth: "",
+      dateOfBirth: "",
+      gender: "male",
+      group: "",
+    },
+  });
+
+  const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     setLoading(true);
-
-    const data: any = {
-      fullname: fullname,
-      placeOfBirth: placeOfBirth,
-      dob: dob,
-      gender: gender,
-    };
-
-    data.group = groupAthlete(data.dob);
+    data.group = groupAthlete(data.dateOfBirth);
 
     try {
       const response = await userInstance.addAthlete(data, token);
@@ -43,17 +53,89 @@ const AthleteForm = ({ onClose }: { onClose: (data: any) => void }) => {
   };
 
   return (
-    <form method="POST" className="mt-8 mx-auto max-w-md" onSubmit={handleSubmit}>
-      <Input label="Full name" name="fullname" type="text" required placeholder="Full name" value={fullname} onChange={onFullnameChange} />
-      <Input label="Place of birth" name="placeOfBirth" type="text" required placeholder="Kediri" value={placeOfBirth} onChange={onPlaceOfBirthChange} />
-      <Input label="Date of birth" name="dob" type="date" required value={dob} onChange={onDobChange} />
-      <GenderSelect value={gender} onChange={onGenderChange} />
-      <hr className="border-gray-400 shadow-sm" />
-      <button type="submit" className="btn-submit mt-10" disabled={loading}>
-        Add
-      </button>
-      {loading && <Loading />}
-    </form>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="max-w-md w-full flex flex-col gap-4">
+        <FormField
+          control={form.control}
+          name="fullname"
+          render={({ field }) => {
+            return (
+              <FormItem>
+                <FormLabel>Full Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="Example" type="text" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
+        />
+        <FormField
+          control={form.control}
+          name="placeOfBirth"
+          render={({ field }) => {
+            return (
+              <FormItem>
+                <FormLabel>Place of birth</FormLabel>
+                <FormControl>
+                  <Input placeholder="Example" type="text" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
+        />
+        <FormField
+          control={form.control}
+          name="dateOfBirth"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>Date of birth</FormLabel>
+              <input type="date" {...field} />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="gender"
+          render={({ field }) => {
+            return (
+              <FormItem>
+                <FormLabel>Gender</FormLabel>
+                <FormControl>
+                  <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex flex-col space-y-1">
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <RadioGroupItem value="male" />
+                      </FormControl>
+                      <FormLabel className="font-normal">Male</FormLabel>
+                    </FormItem>
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <RadioGroupItem value="female" />
+                      </FormControl>
+                      <FormLabel className="font-normal">Female</FormLabel>
+                    </FormItem>
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
+        />
+        {loading ? (
+          <Button disabled className="mt-3">
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Please wait
+          </Button>
+        ) : (
+          <Button type="submit" className="mt-3">
+            Add
+          </Button>
+        )}
+      </form>
+    </Form>
   );
 };
 

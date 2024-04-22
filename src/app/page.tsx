@@ -1,43 +1,54 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
 import HomeView from "@/components/views/Home";
+import { fetcher } from "@/utils/fetcher";
+import { Loader } from "lucide-react";
 import Link from "next/link";
+import useSWR from "swr";
 
 const LandingPage = () => {
+  const { data, error, isLoading } = useSWR("/api/events", fetcher);
+
   return (
-    <div className="px-5 bg-slate-100">
-      <header className="bg-gray-900 py-4 px-5 md:px-10">
-        <div className="mx-auto flex flex-col md:flex-row justify-between items-center">
-          <h1 className="text-white text-2xl font-semibold mb-2 md:mb-0">Lomba Renang</h1>
-          <nav className="mb-4 md:mb-0">
-            <ul className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4">
-              <li>
-                <a href="#home" className="text-white hover:text-gray-200">
-                  Home
-                </a>
-              </li>
-              <li>
-                <a href="#about" className="text-white hover:text-gray-200">
-                  About
-                </a>
-              </li>
-            </ul>
-          </nav>
-          <div className="flex">
-            <Link href="/auth/login" className="bg-white text-gray-900 py-2 px-4 rounded-md hover:bg-gray-400 hover:font-bold mr-4">
-              Login
-            </Link>
-            <Link href="/auth/register" className="bg-white text-gray-900 py-2 px-4 rounded-md hover:bg-gray-400 hover:font-bold">
-              Register
-            </Link>
-          </div>
+    <section className="bg-slate-200 px-4">
+      <header className="bg-slate-300 p-3 flex justify-between">
+        <h1 className="text-2xl font-semibold hidden md:block">Lomba Renang</h1>
+        <nav>
+          <ul className="flex">
+            <li>
+              <Button variant="link">
+                <a href="#events">Event</a>
+              </Button>
+            </li>
+            <li>
+              <Button variant="link">
+                <a href="#about">About</a>
+              </Button>
+            </li>
+          </ul>
+        </nav>
+        <div className="flex gap-5">
+          <Button>
+            <Link href="/auth/login">Login</Link>
+          </Button>
+          <Button>
+            <Link href="/auth/register">Register</Link>
+          </Button>
         </div>
       </header>
-      <HomeView />
-      <footer className="bg-gray-900 text-white py-6">
-        <div className="mx-auto text-center">
-          <p className="mb-2">&copy; 2024 Lomba Renang. All rights reserved.</p>
+
+      {isLoading ? (
+        <div className="flex justify-center items-center h-screen">
+          <Loader />
         </div>
+      ) : (
+        <HomeView events={data?.data} />
+      )}
+      <footer className="bg-slate-300 py-3">
+        <p className="text-center">&copy; 2024 Lomba Renang. All rights reserved.</p>
       </footer>
-    </div>
+    </section>
   );
 };
 

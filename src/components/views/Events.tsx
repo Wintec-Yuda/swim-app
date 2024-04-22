@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Modal from "../templates/Modal";
 import EventForm from "../fragments/form/Event";
 import EventTable from "../fragments/table/Event";
+import { Button } from "../ui/button";
 
 const EventsView = ({ data }: any) => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -23,14 +24,12 @@ const EventsView = ({ data }: any) => {
   };
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="py-8">
-        <button className="btn-button mb-4 ms-4" onClick={handleAddEventClick}>
+    <>
+      <div className="p-4">
+        <Button className="bg-blue-700 mb-3 hover:bg-blue-900" onClick={handleAddEventClick}>
           Add Event
-        </button>
-        <div>
-          <EventTable events={events} setEvents={setEvents} />
-        </div>
+        </Button>
+        <EventTable events={events} setEvents={setEvents} />
       </div>
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
         <>
@@ -38,7 +37,7 @@ const EventsView = ({ data }: any) => {
           <EventForm onClose={handleCloseModal} />
         </>
       </Modal>
-    </div>
+    </>
   );
 };
 

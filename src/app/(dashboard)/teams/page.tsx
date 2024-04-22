@@ -2,13 +2,19 @@
 
 import useSWR from "swr";
 import { fetcher } from "@/utils/fetcher";
-import Loading from "@/components/fragments/Loading";
 import TeamsView from "@/components/views/Teams";
+import { Loader } from "lucide-react";
 
 const TeamsPage: React.FC = () => {
   const { data, error, isLoading } = useSWR("/api/users", fetcher);
 
-  return isLoading ? <Loading /> : <TeamsView users={data?.data} />;
+  return isLoading ? (
+    <div className="flex justify-center items-center h-screen">
+      <Loader />
+    </div>
+  ) : (
+    <TeamsView users={data?.data} />
+  );
 };
 
 export default TeamsPage;

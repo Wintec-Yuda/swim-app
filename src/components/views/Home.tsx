@@ -1,42 +1,45 @@
-const HomeView = () => {
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import EventDetail from "../fragments/detail/Event";
+
+const HomeView = ({ events }: any) => {
   return (
-    <>
-      <section className="mx-auto my-8" id="home">
-        <h2 className="text-3xl font-semibold mb-4">Acara Mendatang</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="bg-white shadow-md p-6 rounded-lg">
-            <h3 className="text-xl font-semibold mb-4">Kompetisi Renang 1</h3>
-            <p className="text-gray-700 mb-2">Tanggal: [Masukkan tanggal]</p>
-            <p className="text-gray-700">Deskripsi: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam lobortis tristique diam, nec pulvinar turpis gravida at.</p>
-          </div>
-          <div className="bg-white shadow-md p-6 rounded-lg">
-            <h3 className="text-xl font-semibold mb-4">Kompetisi Renang 2</h3>
-            <p className="text-gray-700 mb-2">Tanggal: [Masukkan tanggal]</p>
-            <p className="text-gray-700">Deskripsi: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam lobortis tristique diam, nec pulvinar turpis gravida at.</p>
-          </div>
-        </div>
-      </section>
-      <section className="mx-auto my-8" id="about">
-        <h2 className="text-3xl font-semibold mb-4">Tentang Kami</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="bg-white shadow-md p-6 rounded-lg">
-            <h3 className="text-xl font-semibold mb-4">Visi Kami</h3>
-            <p className="text-gray-700">
-              Kami berkomitmen untuk menjadi penyelenggara kompetisi renang terdepan yang mempromosikan gaya hidup sehat, semangat kompetitif, dan kesempatan bagi setiap individu untuk berkembang dalam olahraga renang.
-            </p>
-          </div>
-          <div className="bg-white shadow-md p-6 rounded-lg">
-            <h3 className="text-xl font-semibold mb-4">Misi Kami</h3>
+    <section className="flex flex-col gap-5 my-5 px-3">
+      <h2 className="text-3xl font-semibold">Events</h2>
+      <div className="mx-auto" id="event">
+        <Carousel className="w-full max-w-xs" id="events">
+          <CarouselPrevious />
+          <CarouselContent>
+            {events.map((event: any, index: number) => (
+              <CarouselItem key={index}>
+                <EventDetail event={event} />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselNext />
+        </Carousel>
+      </div>
+      <h2 className="text-3xl font-semibold">Tentang Kami</h2>
+      <div className="mx-auto flex flex-col gap-3" id="about">
+        <Card>
+          <CardHeader className="text-xl font-semibold">Visi Kami</CardHeader>
+          <CardContent>
+            Kami berkomitmen untuk menjadi penyelenggara kompetisi renang terdepan yang mempromosikan gaya hidup sehat, semangat kompetitif, dan kesempatan bagi setiap individu untuk berkembang dalam olahraga renang.
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="text-xl font-semibold">Misi Kami</CardHeader>
+          <CardContent>
             <ul className="list-disc pl-6">
-              <li className="mb-2">Memberikan platform untuk mengembangkan bakat renang.</li>
-              <li className="mb-2">Mendorong partisipasi masyarakat dalam aktivitas renang.</li>
-              <li className="mb-2">Memastikan penyelenggaraan kompetisi yang adil dan berkualitas.</li>
-              <li className="mb-2">Menyebarkan kesadaran akan pentingnya olahraga renang untuk kesehatan dan kebugaran.</li>
+              <li>Memberikan platform untuk mengembangkan bakat renang.</li>
+              <li>Mendorong partisipasi masyarakat dalam aktivitas renang.</li>
+              <li>Memastikan penyelenggaraan kompetisi yang adil dan berkualitas.</li>
+              <li>Menyebarkan kesadaran akan pentingnya olahraga renang untuk kesehatan dan kebugaran.</li>
             </ul>
-          </div>
-        </div>
-      </section>
-    </>
+          </CardContent>
+        </Card>
+      </div>
+    </section>
   );
 };
 

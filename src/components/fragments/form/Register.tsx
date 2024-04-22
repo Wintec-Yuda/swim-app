@@ -1,39 +1,59 @@
 "use client";
 
-import { useState } from "react";
-import useInput from "@/hooks/useInput";
-import authInstance from "@/instances/auth";
-import { errorAlert, successAlert } from "@/utils/sweetalert";
 import { useRouter } from "next/navigation";
-import Input from "@/components/ui/Input";
-import Loading from "../Loading";
+import { errorAlert, successAlert } from "@/utils/sweetalert";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Loader2 } from "lucide-react";
+import { useState } from "react";
+import authInstance from "@/instances/auth";
+import { Input } from "@/components/ui/input";
 
-const RegisterForm = () => {
+const formSchema = z
+  .object({
+    fullname: z.string({ required_error: "Fullname is required" }),
+    team: z.string({ required_error: "Team is required" }),
+    phone: z.string({required_error: "Phone is required"}),
+    email: z.string({ required_error: "Email is required" }).email(),
+    password: z.string({ required_error: "Password is required" }),
+    passwordConfirm: z.string({ required_error: "Password confirmation is required" }),
+  })
+  .refine(
+    (data) => {
+      return data.password === data.passwordConfirm;
+    },
+    {
+      message: "Passwords do not match",
+      path: ["passwordConfirm"],
+    }
+  );
+
+const LoginForm = () => {
   const { push } = useRouter();
   const [loading, setLoading] = useState(false);
-  const [fullname, onChangeFullname] = useInput("");
-  const [team, onChangeTeam] = useInput("");
-  const [phone, onChangePhone] = useInput("");
-  const [email, onChangeEmail] = useInput("");
-  const [password, onChangePassword] = useInput("");
 
-  const handleSubmit = async (event: any) => {
-    event.preventDefault();
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      fullname: "",
+      team: "",
+      phone: "",
+      email: "",
+      password: "",
+      passwordConfirm: "",
+    },
+  });
+
+  const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     setLoading(true);
-
-    const data = {
-      fullname: fullname,
-      team: team,
-      phone: phone,
-      email: email,
-      password: password,
-    };
-
     try {
       const response = await authInstance.register(data);
       successAlert(response.data.message);
       push("/auth/login");
-    } catch (error) {
+    } catch {
       errorAlert("Internal Server Error");
     } finally {
       setLoading(false);
@@ -41,24 +61,109 @@ const RegisterForm = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto">
-      <form className="mt-8 space-y-6" onSubmit={handleSubmit} method="POST">
-        <div className="rounded-md shadow-sm -space-y-px">
-          <Input label="Full name" name="fullname" type="text" required placeholder="Full Name" value={fullname} onChange={onChangeFullname} />
-          <Input label="Team" name="team" type="text" required placeholder="Team" value={team} onChange={onChangeTeam} />
-          <Input label="Phone" name="phone" type="number" required placeholder="085xxxxxxxxx" value={phone} onChange={onChangePhone} />
-          <Input label="Email" name="email" type="email" required placeholder="example@gmail.com" value={email} onChange={onChangeEmail} />
-          <Input label="Password" name="password" type="password" required placeholder="********" value={password} onChange={onChangePassword} />
-        </div>
-        <div>
-          <button type="submit" className="btn-submit" disabled={loading}>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="max-w-md w-full flex flex-col">
+        <FormField
+          control={form.control}
+          name="fullname"
+          render={({ field }) => {
+            return (
+              <FormItem>
+                <FormLabel>Fullname</FormLabel>
+                <FormControl>
+                  <Input placeholder="Full Name" type="text" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
+        />
+        <FormField
+          control={form.control}
+          name="team"
+          render={({ field }) => {
+            return (
+              <FormItem>
+                <FormLabel>team</FormLabel>
+                <FormControl>
+                  <Input placeholder="Alamasta" type="text" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
+        />
+        <FormField
+          control={form.control}
+          name="phone"
+          render={({ field }) => {
+            return (
+              <FormItem>
+                <FormLabel>Phone</FormLabel>
+                <FormControl>
+                  <Input placeholder="08XXXXXXXX" type="number" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
+        />
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => {
+            return (
+              <FormItem>
+                <FormLabel>Email address</FormLabel>
+                <FormControl>
+                  <Input placeholder="example@gmail.com" type="email" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
+        />
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => {
+            return (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input placeholder="Password" type="password" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
+        />
+        <FormField
+          control={form.control}
+          name="passwordConfirm"
+          render={({ field }) => {
+            return (
+              <FormItem>
+                <FormLabel>Password confirm</FormLabel>
+                <FormControl>
+                  <Input placeholder="Password confirm" type="password" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
+        />
+        {loading ? (
+          <Button disabled className="mt-3">
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             Register
-          </button>
-        </div>
+          </Button>
+        ) : (
+          <Button type="submit" className="mt-3">Register</Button>
+        )}
       </form>
-      {loading && <Loading />}
-    </div>
+    </Form>
   );
 };
 
-export default RegisterForm;
+export default LoginForm;

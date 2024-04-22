@@ -24,7 +24,7 @@ const Modal = ({ isOpen, onClose, children }: Props) => {
           <div className="bg-white rounded-lg z-50 max-w-full mx-auto relative">
             {" "}
             <button className="absolute top-0 right-0 m-4 p-2 rounded-full bg-red-500 hover:bg-red-700 text-slate-200 focus:outline-none" onClick={() => onClose()}>
-              <AiOutlineClose size={20} />
+              <AiOutlineClose size={15} />
             </button>
             <div className="p-10">{children}</div>
           </div>

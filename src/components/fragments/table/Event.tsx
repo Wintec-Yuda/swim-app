@@ -3,11 +3,13 @@ import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { FaUsers } from "react-icons/fa6";
-import Loading from "../Loading";
 import eventInstance from "@/instances/event";
 import userInstance from "@/instances/user";
 import Modal from "@/components/templates/Modal";
 import AthleteTable from "./Athlete";
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 
 const EventTable = ({ events, setEvents, user, setAthletes, indexUser, onClose }: any) => {
   const [loading, setLoading] = useState(false);
@@ -80,73 +82,86 @@ const EventTable = ({ events, setEvents, user, setAthletes, indexUser, onClose }
   };
 
   return (
-    <div className="overflow-x-auto">
-      <table className="table-auto w-full bg-white shadow-md rounded-lg">
-        <thead className="bg-gray-200 text-gray-700 uppercase text-sm leading-normal">
-          <tr>
-            <th className="th-td">No</th>
-            <th className="th-td">Style</th>
-            <th className="th-td">Number</th>
-            <th className="th-td">Gender</th>
-            {role === "user" && <th className="th-td">Join event</th>}
+    <>
+      <Table>
+        <TableCaption>Table Events</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead>No</TableHead>
+            <TableHead>Style</TableHead>
+            <TableHead>Number</TableHead>
+            <TableHead>Gender</TableHead>
+            {role === "user" && <TableHead>Join Event</TableHead>}
             {role === "admin" && (
               <>
-                <th className="th-td">Athletes</th>
-                <th className="th-td">Action</th>
+                <TableHead>Athletes</TableHead>
+                <TableHead>Action</TableHead>
               </>
             )}
-          </tr>
-        </thead>
-        <tbody className="text-gray-600 text-sm font-light">
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {events && events.length === 0 ? (
-            <tr>
-              <td className="th-td" colSpan={5}>
-                No data available
-              </td>
-            </tr>
+            <TableRow>
+              <TableCell>No data available</TableCell>
+            </TableRow>
           ) : (
             events &&
-            events.map((event: any, index: any) => (
-              <tr key={index} className="border-b border-sky-500 hover:bg-sky-100">
-                <td className="th-td">{index + 1}</td>
-                <td className="th-td">{event.style}</td>
-                <td className="th-td">{event.number}</td>
-                <td className="th-td">{event.gender}</td>
+            events.map((event: any, index: number) => (
+              <TableRow key={index}>
+                <TableCell>{index + 1}</TableCell>
+                <TableCell>{event.style}</TableCell>
+                <TableCell>{event.number}</TableCell>
+                <TableCell>{event.gender}</TableCell>
                 {role === "user" && (
-                  <td className="th-td">
-                    <button className="btn-button bg-blue-500 hover:bg-blue-700" onClick={() => handleJoinEvent(event.id)} disabled={loading}>
-                      Join
-                    </button>
-                  </td>
+                  <TableCell>
+                    {loading ? (
+                      <Button>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Please wait
+                      </Button>
+                    ) : (
+                      <Button onClick={() => handleJoinEvent(event.id)}>
+                        Join
+                      </Button>
+                    )}
+                  </TableCell>
                 )}
                 {role === "admin" && (
                   <>
-                    <td className="th-td">
-                      <button onClick={() => handleAthletes(event.athletes)} className="relative">
+                    <TableCell>
+                      <Button variant="outline" onClick={() => handleAthletes(event.athletes)} className="relative">
                         <span className="absolute -top-2 -right-3 bg-gray-800 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">{event.athletes.length}</span>
                         <FaUsers className="cursor-pointer text-blue-500 text-xl sm:text-2xl" />
-                      </button>
-                    </td>
-                    <td className="th-td">
-                      <button className="btn-button bg-red-500 hover:bg-red-700" onClick={() => handleDelete(event.id, index)} disabled={loading}>
-                        <FaRegTrashCan />
-                      </button>
-                    </td>
+                      </Button>
+                    </TableCell>
+                    <TableCell>
+                      {loading ? (
+                        <Button variant="outline">
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Please wait
+                        </Button>
+                      ) : (
+                        <Button variant="outline" disabled={loading} onClick={() => handleDelete(event.id, index)}>
+                          <FaRegTrashCan className="text-red-700" />
+                        </Button>
+                      )}
+                    </TableCell>
                   </>
                 )}
-              </tr>
+              </TableRow>
             ))
           )}
-        </tbody>
-      </table>
-      {loading && <Loading />}
+        </TableBody>
+      </Table>
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
+        {" "}
         <>
           <h2 className="text-xl font-bold mb-4">Athletes</h2>
-          <AthleteTable athletes={athletesEvent} setAthletes={setAthletesEvent} />
-        </>
+          <AthleteTable athletes={athletesEvent} setAthletes={setAthletesEvent} />{" "}
+        </>{" "}
       </Modal>
-    </div>
+    </>
   );
 };
 
