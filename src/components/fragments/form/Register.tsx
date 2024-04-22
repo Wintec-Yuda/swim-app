@@ -10,7 +10,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import authInstance from "@/instances/auth";
-import { Input } from "../../ui/input";
+import { Input } from "@/components/ui/input";
 
 const formSchema = z
   .object({
