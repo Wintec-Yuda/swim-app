@@ -156,7 +156,7 @@ const LoginForm = () => {
         {loading ? (
           <Button disabled className="mt-3">
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Register
+            Please wait...
           </Button>
         ) : (
           <Button type="submit" className="mt-3">Register</Button>

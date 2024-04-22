@@ -24,10 +24,6 @@ const TeamTable = ({ users }: Props) => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   const handleAthletes = (athletes: any) => {
-    if (!athletes) {
-      errorAlert("Athletes not found");
-      return;
-    }
     setSelectedAthletes(athletes);
     setModalOpen(true);
   };

@@ -73,10 +73,6 @@ const EventTable = ({ events, setEvents, user, setAthletes, indexUser, onClose }
   };
 
   const handleAthletes = (athletes: any) => {
-    if (athletes.length === 0) {
-      errorAlert("Athletes not found");
-      return;
-    }
     setAthletesEvent(athletes);
     setModalOpen(true);
   };
