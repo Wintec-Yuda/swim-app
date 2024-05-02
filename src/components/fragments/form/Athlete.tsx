@@ -1,3 +1,5 @@
+'use client';
+
 import { groupAthlete } from "@/utils";
 import { useSession } from "next-auth/react";
 import userInstance from "@/instances/user";
@@ -11,6 +13,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Loader2 } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/Input";
+import { addAthlete } from "@/store/slices/athlete";
+import { useDispatch } from "react-redux";
 
 const formSchema = z.object({
   fullname: z.string({ required_error: "Fullname is required" }),
@@ -20,9 +24,10 @@ const formSchema = z.object({
   group: z.string({ required_error: "Group is required" }),
 });
 
-const AthleteForm = ({ onClose }: { onClose: (data: any) => void }) => {
+const AthleteForm = ({ onClose }: { onClose: () => void }) => {
   const [loading, setLoading] = useState(false);
 
+  const dispatch = useDispatch();
   const session: any = useSession();
   const token = session?.data.token;
 
@@ -43,8 +48,9 @@ const AthleteForm = ({ onClose }: { onClose: (data: any) => void }) => {
 
     try {
       const response = await userInstance.addAthlete(data, token);
+      dispatch(addAthlete(response.data.data));
       successAlert(response.data.message);
-      onClose(response.data.data);
+      onClose();
     } catch (error) {
       errorAlert("Internal Server Error");
     } finally {

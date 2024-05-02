@@ -11,6 +11,8 @@ import { Loader2 } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { events } from "@/constants/Swimrace";
+import { useDispatch } from "react-redux";
+import { addEvent } from "@/store/slices/event";
 
 const formSchema = z.object({
   style: z.string({ required_error: "Style is required" }),
@@ -18,10 +20,11 @@ const formSchema = z.object({
   gender: z.enum(["male", "female"]),
 });
 
-const EventForm = ({ onClose }: { onClose: (data: any) => void }) => {
+const EventForm = ({ onClose }: { onClose: () => void }) => {
   const [loading, setLoading] = useState(false);
   const [styles, setStyles] = useState<any>([]);
 
+  const dispatch = useDispatch();
   const session: any = useSession();
   const token = session?.data.token;
 
@@ -42,8 +45,9 @@ const EventForm = ({ onClose }: { onClose: (data: any) => void }) => {
     setLoading(true);
     try {
       const response = await eventInstance.addEvent(data, token);
+      dispatch(addEvent(response.data.data));
       successAlert(response.data.message);
-      onClose(response.data.data);
+      onClose();
     } catch (error) {
       errorAlert("Internal Server Error");
     } finally {

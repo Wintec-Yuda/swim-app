@@ -6,7 +6,7 @@ export async function POST(request: NextRequest) {
   try {
     const data = await request.json();
     const existingUser = await getDataByField("users", "email", data.email);
-
+    
     if (existingUser.length > 0) {
       return NextResponse.json(
         {

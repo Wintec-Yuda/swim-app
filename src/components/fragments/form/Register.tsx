@@ -12,24 +12,13 @@ import { useState } from "react";
 import authInstance from "@/instances/auth";
 import { Input } from "@/components/ui/Input";
 
-const formSchema = z
-  .object({
-    fullname: z.string({ required_error: "Fullname is required" }),
-    team: z.string({ required_error: "Team is required" }),
-    phone: z.string({required_error: "Phone is required"}),
-    email: z.string({ required_error: "Email is required" }).email(),
-    password: z.string({ required_error: "Password is required" }),
-    passwordConfirm: z.string({ required_error: "Password confirmation is required" }),
-  })
-  .refine(
-    (data) => {
-      return data.password === data.passwordConfirm;
-    },
-    {
-      message: "Passwords do not match",
-      path: ["passwordConfirm"],
-    }
-  );
+const formSchema = z.object({
+  fullname: z.string({ required_error: "Fullname is required" }),
+  team: z.string({ required_error: "Team is required" }),
+  phone: z.string({ required_error: "Phone is required" }),
+  email: z.string({ required_error: "Email is required" }).email(),
+  password: z.string({ required_error: "Password is required" }),
+});
 
 const LoginForm = () => {
   const { push } = useRouter();
@@ -43,7 +32,6 @@ const LoginForm = () => {
       phone: "",
       email: "",
       password: "",
-      passwordConfirm: "",
     },
   });
 
@@ -138,28 +126,15 @@ const LoginForm = () => {
             );
           }}
         />
-        <FormField
-          control={form.control}
-          name="passwordConfirm"
-          render={({ field }) => {
-            return (
-              <FormItem>
-                <FormLabel>Password confirm</FormLabel>
-                <FormControl>
-                  <Input placeholder="Password confirm" type="password" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            );
-          }}
-        />
         {loading ? (
           <Button disabled className="mt-3">
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             Please wait...
           </Button>
         ) : (
-          <Button type="submit" className="mt-3">Register</Button>
+          <Button type="submit" className="mt-3">
+            Register
+          </Button>
         )}
       </form>
     </Form>

@@ -1,9 +1,12 @@
+import { useSelector } from "react-redux";
 import TeamTable from "../fragments/table/Team";
 
-const TeamsView = ({ users }: any) => {
+const TeamsView = () => {
+  const teams = useSelector((state: any) => state.team.data);
+
   return (
     <section className="flex justify-center items-center mt-5">
-      <TeamTable users={users} />
+      <TeamTable teams={teams} />
     </section>
   );
 };

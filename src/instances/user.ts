@@ -6,13 +6,14 @@ const userInstance = {
       headers: { Authorization: `Bearer ${token}` },
     }),
 
-  addAthleteEvent: (index: any, eventId: any, data: any, token: string) =>
-    instance.post(`/api/user/athlete/event/${index}/${eventId}`, data, {
+  addAthleteEvent: (athlete: any, eventId: string, token: string) =>
+    instance.post(`/api/user/athlete/event/${eventId}`, athlete, {
       headers: { Authorization: `Bearer ${token}` },
     }),
 
-  deleteAthlete: (index: string, token: string) =>
-    instance.delete(`/api/user/athlete/${index}`, {
+  deleteAthlete: (data: any, token: string) =>
+    instance.delete("/api/user/athlete", {
+      data: data,
       headers: { Authorization: `Bearer ${token}` },
     }),
 };

@@ -4,25 +4,24 @@ import { addAthlete, getDataById, updateAthleteWithEvent } from "@/lib/firebase/
 
 export async function POST(request: NextRequest) {
   try {
-    const dataUser = await request.json();
+    const athlete = await request.json();
     const token: any = request.headers.get("authorization")?.split(" ")[1];
     const decoded: any = jwt.verify(token, process.env.NEXTAUTH_SECRET || "");
-    const partnames = request.url.split("/");
-    const eventId = partnames[partnames.length - 1];
-    const index: any = partnames[partnames.length - 2];
+    const eventId: any = request.url.split("/").pop();
 
     if (decoded && decoded.role === "user") {
-      const dataEvent: any = await getDataById("events", eventId);
-      delete dataEvent.athletes;
+      const eventData: any = await getDataById("events", eventId);
+      delete eventData.athletes;
+      eventData._id = eventId;
 
-      const statusAdd = await addAthlete("events", eventId, dataUser);
-      const statusUpdate = await updateAthleteWithEvent(decoded.id, index, dataEvent);
+      const statusAdd = await addAthlete("events", eventId, athlete);
+      const statusUpdate = await updateAthleteWithEvent(decoded.id, athlete._id, eventData);
+
       if (statusAdd && statusUpdate) {
         return NextResponse.json(
           {
             success: true,
             message: `Add athlete to event successfully`,
-            data: dataEvent,
           },
           { status: 200 }
         );

@@ -71,7 +71,7 @@ export async function addAthlete(collectionName: string, userId: string, athlete
   }
 }
 
-export async function deleteAthleteByIndex(userId: string, athleteIndex: number) {
+export async function deleteAthleteById(userId: string, athleteId: string) {
   try {
     const userRef = doc(firestore, "users", userId);
     const userSnapshot = await getDoc(userRef);
@@ -81,12 +81,15 @@ export async function deleteAthleteByIndex(userId: string, athleteIndex: number)
     }
 
     const userData = userSnapshot.data();
-    if (!userData || !userData.athletes || !Array.isArray(userData.athletes) || userData.athletes.length <= athleteIndex) {
-      throw new Error("Athlete not found at provided index");
+    if (!userData || !userData.athletes || !Array.isArray(userData.athletes)) {
+      throw new Error("User data or athletes array not found");
     }
 
-    const updatedAthletes = [...userData.athletes];
-    updatedAthletes.splice(athleteIndex, 1);
+    const updatedAthletes = userData.athletes.filter((athlete) => athlete._id !== athleteId);
+
+    if (updatedAthletes.length === userData.athletes.length) {
+      throw new Error("Athlete not found");
+    }
 
     await updateDoc(userRef, {
       athletes: updatedAthletes,
@@ -94,11 +97,43 @@ export async function deleteAthleteByIndex(userId: string, athleteIndex: number)
 
     return true;
   } catch (error) {
+    console.error("Error deleting athlete:", error);
     return false;
   }
 }
 
-export async function updateAthleteWithEvent(userId: string, athleteIndex: number, eventData: any) {
+export async function deleteEventAthleteById(eventId: string, athleteId: string) {
+  try {
+    const eventRef = doc(firestore, "events", eventId);
+    const eventSnapshot = await getDoc(eventRef);
+
+    if (!eventSnapshot.exists()) {
+      throw new Error("Event document not found");
+    }
+
+    const eventData = eventSnapshot.data();
+    if (!eventData || !eventData.athletes || !Array.isArray(eventData.athletes)) {
+      throw new Error("Event data or athletes array not found");
+    }
+
+    const updatedEventAthletes = eventData.athletes.filter((athlete) => athlete._id !== athleteId);
+
+    if (updatedEventAthletes.length === eventData.athletes.length) {
+      throw new Error("Athlete not found");
+    }
+
+    await updateDoc(eventRef, {
+      athletes: updatedEventAthletes,
+    });
+
+    return true;
+  } catch (error) {
+    console.error("Error deleting athlete:", error);
+    return false;
+  }
+}
+
+export async function updateAthleteWithEvent(userId: string, athleteId: string, eventData: any) {
   try {
     const userRef = doc(firestore, "users", userId);
     const userSnapshot = await getDoc(userRef);
@@ -108,16 +143,19 @@ export async function updateAthleteWithEvent(userId: string, athleteIndex: numbe
     }
 
     const userData = userSnapshot.data();
-    if (!userData || !userData.athletes || !Array.isArray(userData.athletes) || userData.athletes.length <= athleteIndex) {
-      throw new Error("Athlete not found at provided index");
+    if (!userData || !userData.athletes || !Array.isArray(userData.athletes)) {
+      throw new Error("User data or athletes array not found");
     }
 
-    const updatedAthletes = [...userData.athletes];
-    const athleteToUpdate = { ...updatedAthletes[athleteIndex] };
-
-    athleteToUpdate.event = eventData;
-
-    updatedAthletes[athleteIndex] = athleteToUpdate;
+    const updatedAthletes = userData.athletes.map((athlete) => {
+      if (athlete._id === athleteId) {
+        return {
+          ...athlete,
+          event: eventData,
+        };
+      }
+      return athlete;
+    });
 
     await updateDoc(userRef, {
       athletes: updatedAthletes,
@@ -125,6 +163,7 @@ export async function updateAthleteWithEvent(userId: string, athleteIndex: numbe
 
     return true;
   } catch (error) {
+    console.error("Error updating athlete with event:", error);
     return false;
   }
 }

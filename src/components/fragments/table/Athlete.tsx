@@ -2,62 +2,40 @@ import userInstance from "@/instances/user";
 import { formatDob } from "@/utils";
 import { confirmAlert, errorAlert, successAlert } from "@/utils/sweetalert";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FaRegTrashCan } from "react-icons/fa6";
-import useSWR from "swr";
-import { fetcher } from "@/utils/fetcher";
 import Modal from "@/components/templates/Modal";
 import EventTable from "./Event";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import EventDetail from "../detail/Event";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteAthlete } from "@/store/slices/athlete";
 
-interface Athlete {
-  fullname: string;
-  placeOfBirth: string;
-  dateOfBirth: string;
-  gender: string;
-  group: string;
-  event: object;
-}
-
-interface Props {
-  athletes: Athlete[];
-  setAthletes: React.Dispatch<React.SetStateAction<Athlete[]>>;
-}
-
-const AthleteTable = ({ athletes, setAthletes }: Props) => {
+const AthleteTable = ({ athletes }: any) => {
   const [loading, setLoading] = useState(false);
-  const [events, setEvents] = useState<any[]>([]);
   const [event, setEvent] = useState<any>(null);
   const [modalJoinOpen, setModalJoinOpen] = useState<boolean>(false);
   const [modalCekOpen, setModalCekOpen] = useState<boolean>(false);
-  const [eventsByGender, setEventsByGender] = useState<any[]>([]);
-  const [selectedUser, setSelectedUser] = useState<any>(null);
-  const [selectedIndex, setSelectedIndex] = useState<any>(null);
+  const [selectedAthlete, setSelectedAthlete] = useState<any>(null);
+  const [eventsByGender, setEventsByGender] = useState<any>(null);
 
-  const { data, error, isLoading } = useSWR("/api/events", fetcher);
-
-  useEffect(() => {
-    setEvents(data?.data || []);
-  }, []);
-
+  const dispatch = useDispatch();
   const session: any = useSession();
   const token = session?.data?.token;
   const role = session?.data?.user?.role;
+  const events = useSelector((state: any) => state.event.data);
 
-  const handleDelete = async (index: any) => {
+  const handleDelete = async (data: any) => {
     const confirmed = await confirmAlert("Yes, delete it!");
 
     if (confirmed) {
       setLoading(true);
       try {
-        const response = await userInstance.deleteAthlete(index, token);
+        const response = await userInstance.deleteAthlete(data, token);
+        dispatch(deleteAthlete(data.athleteId));
         if (response.data.success) {
-          const updatedAthletes = [...athletes];
-          updatedAthletes.splice(index, 1);
-          setAthletes(updatedAthletes);
           successAlert("Athlete deleted successfully");
         } else {
           errorAlert("Internal Server Error");
@@ -70,11 +48,10 @@ const AthleteTable = ({ athletes, setAthletes }: Props) => {
     }
   };
 
-  const handleJoinEvent = (user: any, index: any) => {
-    const filteredEvents = events.filter((event) => event.gender === user.gender);
-    setEventsByGender(filteredEvents);
-    setSelectedUser(user);
-    setSelectedIndex(index);
+  const handleJoinEvent = (athlete: any) => {
+    setSelectedAthlete(athlete);
+    const eventsSameGender = events.filter((event: any) => event.gender === athlete.gender);
+    setEventsByGender(eventsSameGender);
     setModalJoinOpen(true);
   };
 
@@ -121,21 +98,7 @@ const AthleteTable = ({ athletes, setAthletes }: Props) => {
                     </TableCell>
                   ) : (
                     <TableCell>
-                      <Button
-                        variant="outline"
-                        onClick={() =>
-                          handleJoinEvent(
-                            {
-                              fullname: athlete.fullname,
-                              placeOfBirth: athlete.placeOfBirth,
-                              dob: athlete.dob,
-                              gender: athlete.gender,
-                              group: athlete.group,
-                            },
-                            index
-                          )
-                        }
-                      >
+                      <Button variant="outline" onClick={() => handleJoinEvent(athlete)}>
                         Daftar Event
                       </Button>
                     </TableCell>
@@ -148,7 +111,16 @@ const AthleteTable = ({ athletes, setAthletes }: Props) => {
                         Please wait
                       </Button>
                     ) : (
-                      <Button variant="outline" disabled={loading} onClick={() => handleDelete(index)}>
+                      <Button
+                        variant="outline"
+                        disabled={loading}
+                        onClick={() =>
+                          handleDelete({
+                            athleteId: athlete._id,
+                            eventId: athlete.event?._id,
+                          })
+                        }
+                      >
                         <FaRegTrashCan className="text-red-700" />
                       </Button>
                     )}
@@ -162,7 +134,7 @@ const AthleteTable = ({ athletes, setAthletes }: Props) => {
       <Modal isOpen={modalJoinOpen} onClose={() => setModalJoinOpen(false)}>
         <>
           <h2 className="text-xl font-bold mb-4">Add athlete to event</h2>
-          <EventTable events={eventsByGender} setEvents={setEventsByGender} user={selectedUser} setAthletes={setAthletes} indexUser={selectedIndex} onClose={() => setModalJoinOpen(false)} />
+          <EventTable events={eventsByGender} athlete={selectedAthlete} onClose={() => setModalJoinOpen(false)} />
         </>
       </Modal>
       <Modal isOpen={modalCekOpen} onClose={() => setModalCekOpen(false)}>

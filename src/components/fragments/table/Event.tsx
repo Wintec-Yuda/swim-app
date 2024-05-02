@@ -10,27 +10,28 @@ import AthleteTable from "./Athlete";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { deleteEvent } from "@/store/slices/event";
+import { addAthleteEvent } from "@/store/slices/athlete";
 
-const EventTable = ({ events, setEvents, user, setAthletes, indexUser, onClose }: any) => {
+const EventTable = ({ events, athlete, onClose }: any) => {
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-  const [athletesEvent, setAthletesEvent] = useState<any[]>([]);
+  const [selectedAthletes, setSelectedAthletes] = useState<any>(null);
+  const dispatch = useDispatch();
 
   const session: any = useSession();
   const token = session?.data?.token;
   const role = session?.data?.user?.role;
 
-  const handleDelete = async (id: any, index: any) => {
+  const handleDelete = async (id: any) => {
     const confirmed = await confirmAlert("Yes, delete it!");
-
     if (confirmed) {
       setLoading(true);
       try {
         const response = await eventInstance.deleteEvent(id, token);
+        dispatch(deleteEvent(id));
         if (response.data.success) {
-          const updatedEvents = [...events];
-          updatedEvents.splice(index, 1);
-          setEvents(updatedEvents);
           successAlert("Event deleted successfully");
         } else {
           errorAlert("Internal Server Error");
@@ -43,22 +44,15 @@ const EventTable = ({ events, setEvents, user, setAthletes, indexUser, onClose }
     }
   };
 
-  const handleJoinEvent = async (id: any) => {
+  const handleJoinEvent = async (event: any) => {
     const confirmed = await confirmAlert("Yes, join it!");
 
     if (confirmed) {
       setLoading(true);
       try {
-        const response = await userInstance.addAthleteEvent(indexUser, id, user, token);
+        const response = await userInstance.addAthleteEvent(athlete, event.id, token);
+        dispatch(addAthleteEvent({ athleteId: athlete._id, event }));
         if (response.data.success) {
-          const eventData = response.data.data;
-
-          setAthletes((prevAthletes: any) => {
-            const updatedAthletes = [...prevAthletes];
-            const athleteToUpdate = updatedAthletes[indexUser];
-            athleteToUpdate.event = eventData;
-            return updatedAthletes;
-          });
           successAlert(response.data.message);
         } else {
           errorAlert("Internal Server Error");
@@ -73,7 +67,7 @@ const EventTable = ({ events, setEvents, user, setAthletes, indexUser, onClose }
   };
 
   const handleAthletes = (athletes: any) => {
-    setAthletesEvent(athletes);
+    setSelectedAthletes(athletes);
     setModalOpen(true);
   };
 
@@ -97,12 +91,7 @@ const EventTable = ({ events, setEvents, user, setAthletes, indexUser, onClose }
           </TableRow>
         </TableHeader>
         <TableBody>
-          {events && events.length === 0 ? (
-            <TableRow>
-              <TableCell>No data available</TableCell>
-            </TableRow>
-          ) : (
-            events &&
+          {events ? (
             events.map((event: any, index: number) => (
               <TableRow key={index}>
                 <TableCell>{index + 1}</TableCell>
@@ -117,9 +106,7 @@ const EventTable = ({ events, setEvents, user, setAthletes, indexUser, onClose }
                         Please wait
                       </Button>
                     ) : (
-                      <Button onClick={() => handleJoinEvent(event.id)}>
-                        Join
-                      </Button>
+                      <Button onClick={() => handleJoinEvent(event)}>Join</Button>
                     )}
                   </TableCell>
                 )}
@@ -138,7 +125,7 @@ const EventTable = ({ events, setEvents, user, setAthletes, indexUser, onClose }
                           Please wait
                         </Button>
                       ) : (
-                        <Button variant="outline" disabled={loading} onClick={() => handleDelete(event.id, index)}>
+                        <Button variant="outline" disabled={loading} onClick={() => handleDelete(event.id)}>
                           <FaRegTrashCan className="text-red-700" />
                         </Button>
                       )}
@@ -147,6 +134,10 @@ const EventTable = ({ events, setEvents, user, setAthletes, indexUser, onClose }
                 )}
               </TableRow>
             ))
+          ) : (
+            <TableRow>
+              <TableCell>No data available</TableCell>
+            </TableRow>
           )}
         </TableBody>
       </Table>
@@ -154,7 +145,7 @@ const EventTable = ({ events, setEvents, user, setAthletes, indexUser, onClose }
         {" "}
         <>
           <h2 className="text-xl font-bold mb-4">Athletes</h2>
-          <AthleteTable athletes={athletesEvent} setAthletes={setAthletesEvent} />{" "}
+          <AthleteTable athletes={selectedAthletes} />{" "}
         </>{" "}
       </Modal>
     </>
